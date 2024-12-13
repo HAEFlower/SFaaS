@@ -5,7 +5,27 @@
 
 ## 실행 방법
 
-### 1. Docker 기반 실행
+### 1. 빌드 스크립트 사용
+
+프로젝트는 `build_run.sh` 스크립트를 통해 쉽게 빌드하고 실행할 수 있습니다:
+
+```bash
+# 컨테이너 중지 후 재빌드 및 시작
+./build_run.sh --restart
+
+# 컨테이너 시작 (빌드 없이)
+./build_run.sh --start
+
+# 컨테이너 중지
+./build_run.sh --stop
+```
+
+스크립트는 다음 작업을 수행합니다:
+- Maven을 통한 프로젝트 빌드
+- 프로젝트의 artifactId와 version을 자동으로 감지
+- Docker 이미지 빌드 및 컨테이너 관리
+
+### 2. Docker 기반 수동 실행
 
 1. **Maven 빌드**:
    ```bash
@@ -22,7 +42,7 @@
    - Spring Boot: Nginx를 통해 `localhost:80/api/hello`로 접근 가능
    - MySQL: 내부적으로 컨테이너 간 연결
 
-### 2. API 테스트
+### 3. API 테스트
 
 테스트 엔드포인트:
 - **URL**: `GET http://localhost/api/hello`
