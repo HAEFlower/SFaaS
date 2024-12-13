@@ -23,7 +23,7 @@ SFaaS Project
 
 3. 애플리케이션이 실행되면 아래와 같은 로그를 확인하세요:
     ```
-    Tomcat started on port(s): 8081 (http)
+    Tomcat started on port(s): 8080 (http)
     ```
 
 ---
