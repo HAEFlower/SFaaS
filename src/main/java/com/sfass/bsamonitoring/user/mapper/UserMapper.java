@@ -17,4 +17,6 @@ public interface UserMapper {
 	void insertUser(User user);
 
 	User getUser(UserLoginDto userLoginDto);
+
+	void updateLogin(UserLoginDto userLoginDto);
 }

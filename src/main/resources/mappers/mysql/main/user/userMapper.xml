@@ -62,4 +62,12 @@
           AND user_pwd = #{userPwd}
     </select>
 
+    <update id="updateLogin" parameterType="UserLoginDto">
+        UPDATE ${bsa.db.schema}.user
+        SET
+          last_login_time = NOW(),
+          login_status = true
+        WHERE user_id = #{userId} AND user_pwd = #{userPwd}
+    </update>
+
 </mapper>

@@ -27,7 +27,9 @@ public class UserServiceImpl implements UserService {
 	public User loginUser(UserLoginDto userLoginDto) {
 
 		User user = userMapper.loginUser(userLoginDto);
-
+		userMapper.updateLogin(userLoginDto);
+		user.setLastLoginTime(LocalDateTime.now());
+		user.setLoginStatus(true);
 		return user;
 	}
 
