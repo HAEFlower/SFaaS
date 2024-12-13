@@ -23,10 +23,6 @@ public class UserServiceImpl implements UserService {
 
 		User user = userMapper.loginUser(userLoginDto);
 
-		if (user != null) {
-			log.error(user.toString());
-		}
-
 		return user;
 	}
 }
