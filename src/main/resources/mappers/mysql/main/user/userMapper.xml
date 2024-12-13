@@ -10,4 +10,64 @@
             AND user_pwd = #{userPwd}
     </select>
 
+    <select id="getUsers" resultType="User" parameterType="Map">
+        SELECT *
+        FROM ${bsa.db.schema}.user
+        WHERE 1=1
+        <if test="userName != '' and userName != null">
+            AND user_name LIKE CONCAT('%', #{userName}, '%')
+        </if>
+        <if test="productionLine != '' and productionLine != null">
+            AND production_line LIKE CONCAT('%', #{productionLine}, '%')
+        </if>
+        <if test="processLine != '' and processLine != null">
+            AND process_line LIKE CONCAT('%', #{processLine}, '%')
+        </if>
+    </select>
+
+    <insert id="insertUser" parameterType="User">
+        INSERT INTO ${bsa.db.schema}.user
+        (`user_id`,
+        `user_pwd`,
+        `user_name`,
+        `email`,
+        `last_login_time`,
+        `login_status`,
+        `department`,
+        `position`,
+        `emp_no`,
+        `production_line`,
+        `process_line`,
+        `auth`)
+        VALUES
+        (#{userId},
+        #{userPwd},
+        #{userName},
+        #{email},
+        #{lastLoginTime},
+        #{loginStatus},
+        #{department},
+        #{position},
+        #{empNo},
+        #{productionLine},
+        #{processLine},
+        #{auth});
+    </insert>
+
+    <select id="getUser" resultType="User" parameterType="UserLoginDto">
+        SELECT *
+        FROM ${bsa.db.schema}.user
+        WHERE 1=1
+          AND user_id = #{userId}
+          AND user_pwd = #{userPwd}
+    </select>
+
+    <update id="updateLogin" parameterType="UserLoginDto">
+        UPDATE ${bsa.db.schema}.user
+        SET
+          last_login_time = NOW(),
+          login_status = true
+        WHERE user_id = #{userId} AND user_pwd = #{userPwd}
+    </update>
+
 </mapper>

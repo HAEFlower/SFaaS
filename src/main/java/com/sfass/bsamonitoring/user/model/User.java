@@ -33,6 +33,7 @@ public class User {
 	private String empNo;
 	private String productionLine;
 	private String processLine;
+	private String auth;
 
 	public boolean getLoginStatus() {
 		return this.loginStatus;
