@@ -1,5 +1,8 @@
 package com.sfass.bsamonitoring.user.service;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
 import com.sfass.bsamonitoring.user.mapper.UserMapper;
@@ -24,5 +27,13 @@ public class UserServiceImpl implements UserService {
 		User user = userMapper.loginUser(userLoginDto);
 
 		return user;
+	}
+
+	@Override
+	public List<User> getUsers(Map<String, String> paramMap) {
+
+		List<User> result = userMapper.getUsers(paramMap);
+
+		return result;
 	}
 }
