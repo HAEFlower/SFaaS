@@ -37,7 +37,8 @@
         `position`,
         `emp_no`,
         `production_line`,
-        `process_line`)
+        `process_line`,
+        `auth`)
         VALUES
         (#{userId},
         #{userPwd},
@@ -49,7 +50,8 @@
         #{position},
         #{empNo},
         #{productionLine},
-        #{processLine});
+        #{processLine},
+        #{auth});
     </insert>
 
     <select id="getUser" resultType="User" parameterType="UserLoginDto">

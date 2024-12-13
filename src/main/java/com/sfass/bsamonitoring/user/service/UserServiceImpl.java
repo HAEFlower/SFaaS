@@ -53,6 +53,7 @@ public class UserServiceImpl implements UserService {
 		user.setLastLoginTime(LocalDateTime.now());
 		user.setLoginStatus(false);
 		user.setEmpNo(generateEmpNo());
+		user.setAuth("User");
 
 		userMapper.insertUser(user);
 		UserLoginDto userLoginDto = new UserLoginDto();
