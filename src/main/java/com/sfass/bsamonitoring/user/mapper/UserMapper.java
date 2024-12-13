@@ -13,4 +13,8 @@ public interface UserMapper {
 	User loginUser(UserLoginDto userLoginDto);
 
 	List<User> getUsers(Map<String, String> paramMap);
+
+	void insertUser(User user);
+
+	User getUser(UserLoginDto userLoginDto);
 }

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sfass.bsamonitoring.user.model.User;
 import com.sfass.bsamonitoring.user.model.UserLoginDto;
+import com.sfass.bsamonitoring.user.model.UserRegisterDto;
 import com.sfass.bsamonitoring.user.service.UserService;
 
 import lombok.RequiredArgsConstructor;
@@ -47,4 +48,12 @@ public class UserController {
 
 		return users;
 	}
+
+	@PostMapping("/register")
+	public User registerUser(@RequestBody UserRegisterDto userRegisterDto) {
+		User result = userService.registerUser(userRegisterDto);
+
+		return result;
+	}
 }
+
