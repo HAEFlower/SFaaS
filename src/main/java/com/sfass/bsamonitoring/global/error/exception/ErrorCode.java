@@ -20,8 +20,10 @@ public enum ErrorCode {
 	// Auth
 	PERMISSION_DENIED(HttpStatus.FORBIDDEN, "권한이 거부되었습니다."),
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "서버에 문제가 발생했습니다. 관리자에게 문의해주세요."),
-	;
+	// ProductionLine
+	PRODUCTION_LINE_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 생산라인입니다."),
 
+	;
 	private final HttpStatus httpStatus;
 	private final String message;
 }
