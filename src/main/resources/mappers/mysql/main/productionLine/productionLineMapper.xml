@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfass.bsamonitoring.production.productionLine.mapper.ProductionLineMapper">
+
+    <select id="getProductionLineById" resultType="ProductionLine" parameterType="Long">
+        SELECT *
+        FROM ${bsa.db.schema}.production_line
+        WHERE production_line_id = #{id}
+    </select>
+
+    <select id="getAllProduction" resultType="ProductionLine">
+        SELECT *
+        FROM ${bsa.db.schema}.production_line
+    </select>
+
+    <update id="updateMonthlyTarget" parameterType="ProductionLine">
+        UPDATE ${bsa.db.schema}.production_line
+        SET monthly_target = #{monthlyTarget}
+        WHERE production_line_id = #{productionLineId}
+    </update>
+
+    <update id="updateDailyTarget" parameterType="ProductionLine">
+        UPDATE ${bsa.db.schema}.production_line
+        SET daily_target = #{dailyTarget}
+        WHERE production_line_id = #{productionLineId}
+    </update>
+
+    <select id="getMonthlyStats" resultType="MonthlyProductionLineStats" parameterType="ProductionLineStatPk">
+        SELECT *
+        FROM ${bsa.db.schema}.monthly_production_line_stats
+        WHERE
+            production_line_id = #{id} AND year = #{year} AND month = #{month}
+    </select>
+
+    <select id="getMonthlyStatsByYear" resultType="MonthlyProductionLineStats" parameterType="ProductionLineStatPk">
+    SELECT *
+    FROM ${bsa.db.schema}.monthly_production_line_stats
+    WHERE
+        production_line_id = #{id} AND year = #{year}
+    </select>
+
+    <select id="getDailyStats" resultType="DailyProductionLineStats" parameterType="ProductionLineStatPk">
+        SELECT *
+        FROM ${bsa.db.schema}.daily_production_line_stats
+        WHERE
+            production_line_id = #{id} AND year = #{year} AND month = #{month} AND day = #{day}
+    </select>
+
+    <select id="getDailyStatsByYearAndMonth" resultType="DailyProductionLineStats" parameterType="ProductionLineStatPk">
+        SELECT *
+        FROM ${bsa.db.schema}.daily_production_line_stats
+        WHERE
+            production_line_id = #{id} AND year = #{year} AND month = #{month}
+    </select>
+</mapper>

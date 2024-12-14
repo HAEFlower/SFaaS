@@ -15,6 +15,7 @@
 
     <typeAliases>
         <package name="com.sfass.bsamonitoring.user.model" />
+        <package name="com.sfass.bsamonitoring.production.productionLine.model" />
     </typeAliases>
 
 <!--    <mappers>-->
