@@ -25,31 +25,128 @@
         WHERE production_line_id = #{productionLineId}
     </update>
 
-    <select id="getMonthlyStats" resultType="MonthlyProductionLineStats" parameterType="ProductionLineStatPk">
+    <select id="getMonthlyStats" resultType="MonthlyProductionLineStats" parameterType="DateStatPk">
         SELECT *
         FROM ${bsa.db.schema}.monthly_production_line_stats
         WHERE
             production_line_id = #{id} AND year = #{year} AND month = #{month}
     </select>
 
-    <select id="getMonthlyStatsByYear" resultType="MonthlyProductionLineStats" parameterType="ProductionLineStatPk">
+    <select id="getMonthlyStatsByYear" resultType="MonthlyProductionLineStats" parameterType="DateStatPk">
     SELECT *
     FROM ${bsa.db.schema}.monthly_production_line_stats
     WHERE
         production_line_id = #{id} AND year = #{year}
     </select>
 
-    <select id="getDailyStats" resultType="DailyProductionLineStats" parameterType="ProductionLineStatPk">
+    <select id="getDailyStats" resultType="DailyProductionLineStats" parameterType="DateStatPk">
         SELECT *
         FROM ${bsa.db.schema}.daily_production_line_stats
         WHERE
             production_line_id = #{id} AND year = #{year} AND month = #{month} AND day = #{day}
     </select>
 
-    <select id="getDailyStatsByYearAndMonth" resultType="DailyProductionLineStats" parameterType="ProductionLineStatPk">
+    <select id="getDailyStatsByYearAndMonth" resultType="DailyProductionLineStats" parameterType="DateStatPk">
         SELECT *
         FROM ${bsa.db.schema}.daily_production_line_stats
         WHERE
             production_line_id = #{id} AND year = #{year} AND month = #{month}
+    </select>
+
+    <select id="getDailyAllProcessStats" resultType="DailyProcessStats" parameterType="DateStatPk">
+        SELECT *
+        FROM ${bsa.db.schema}.daily_process_stats
+        WHERE production_line_id = #{id} AND year = #{year} AND month = #{month} AND day = #{day}
+    </select>
+
+    <select id="getProductionLineProcessWithName" resultType="ProductionLineProcessWithName" parameterType="Long">
+        SELECT
+            plp.*,
+            pl.product AS production_line_name,
+            pro.name AS process_name,
+            recent_log.last_exec_time
+        FROM
+            ${bsa.db.schema}.production_line_process AS plp
+                LEFT JOIN
+            ${bsa.db.schema}.production_line AS pl ON plp.production_line_id = pl.production_line_id
+                LEFT JOIN
+            ${bsa.db.schema}.process AS pro ON plp.process_id = pro.process_id
+                LEFT JOIN
+            (SELECT
+                 production_line_process_id,
+                 exec_time AS last_exec_time
+             FROM
+                 ${bsa.db.schema}.process_log
+             WHERE (production_line_process_id, log_time) IN (
+                 SELECT
+                     production_line_process_id,
+                     MAX(log_time)
+                 FROM
+                     ${bsa.db.schema}.process_log
+                 GROUP BY
+                     production_line_process_id
+             )) AS recent_log ON plp.production_line_process_id = recent_log.production_line_process_id
+    </select>
+
+    <select id="getDailyProcessStatsById" resultType="DailyProcessStats" parameterType="Map">
+        SELECT *
+        FROM ${bsa.db.schema}.daily_process_stats
+        WHERE
+            production_line_process_id = #{id}
+            AND year = #{dailyPk.year} AND month = #{dailyPk.month} AND day = #{dailyPk.day}
+    </select>
+
+    <update id="updateProductionLineProcessBaseTime" parameterType="Map">
+        UPDATE ${bsa.db.schema}.production_line_process
+        SET base_exec_time = #{newValue}
+        WHERE production_line_process_id = #{id}
+    </update>
+
+    <select id="getProductionLineProcessWithNameOne" resultType="ProductionLineProcessWithName" parameterType="Long">
+        SELECT
+            plp.*,
+            pl.product AS production_line_name,
+            pro.name AS process_name,
+            recent_log.last_exec_time
+        FROM
+            ${bsa.db.schema}.production_line_process AS plp
+                LEFT JOIN
+            ${bsa.db.schema}.production_line AS pl ON plp.production_line_id = pl.production_line_id
+                LEFT JOIN
+            ${bsa.db.schema}.process AS pro ON plp.process_id = pro.process_id
+                LEFT JOIN
+            (SELECT
+                 production_line_process_id,
+                 exec_time AS last_exec_time
+             FROM
+                 ${bsa.db.schema}.process_log
+             WHERE (production_line_process_id, log_time) IN (
+                 SELECT
+                     production_line_process_id,
+                     MAX(log_time)
+                 FROM
+                     ${bsa.db.schema}.process_log
+                 GROUP BY
+                     production_line_process_id
+             )) AS recent_log ON plp.production_line_process_id = recent_log.production_line_process_id
+        WHERE plp.production_line_process_id = #{id}
+    </select>
+
+    <select id="getHourlyProcessStats" resultType="HourlyProcessStats" parameterType="DateStatPk">
+        SELECT hour,
+               avg_time,
+               total_cnt,
+               COALESCE(fault_cnt, 0) AS fault_cnt
+        FROM (
+             SELECT hour,
+                    AVG(exec_time) AS avg_time,
+                    COUNT(*) AS total_cnt,
+                    COUNT(CASE WHEN inspection_result = 0 THEN 1 END) AS fault_cnt
+             FROM ${bsa.db.schema}.process_log
+             WHERE production_line_process_id = #{id}
+               AND year = #{year} AND month = #{month} AND day = #{day}
+             GROUP BY hour
+         ) AS subquery
+        ORDER BY hour
     </select>
 </mapper>

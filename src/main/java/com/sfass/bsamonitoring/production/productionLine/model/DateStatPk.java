@@ -1,8 +1,6 @@
 package com.sfass.bsamonitoring.production.productionLine.model;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-
-public record ProductionLIneStatPk(
+public record DateStatPk(
 	Long id,
 	Integer year,
 	Integer month,
