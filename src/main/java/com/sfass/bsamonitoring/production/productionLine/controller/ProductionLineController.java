@@ -13,14 +13,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentDailyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentMonthlyProductionLineStats;
+import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessDetail;
+import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
+import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStats;
+import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStatsResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
+import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcess;
 import com.sfass.bsamonitoring.production.productionLine.service.ProductionLineService;
 
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/api/produce-lines")
+@RequestMapping("/api/v1/produce-lines")
 @RequiredArgsConstructor
 public class ProductionLineController {
 
@@ -69,6 +75,33 @@ public class ProductionLineController {
 		}
 
 		return productionLineService.getDailyStatsByYearAndMonth(id, year, month);
+	}
+
+	@PostMapping("/process/{productionLineProcessId}")
+	public CurrentProductionLineProcessDetail updateProductionLineProcessBaseTime(
+		@PathVariable Long productionLineProcessId,
+		@RequestBody NewTarget newTarget
+	) {
+		return productionLineService.updateProductinLineProcessBaseTime(productionLineProcessId, newTarget);
+	}
+
+	@GetMapping("/{id}/process")
+	public CurrentProductionLineProcessResponse getProductionLineProcessById(@PathVariable Long id) {
+		return productionLineService.getCurrentProcessStats(id);
+	}
+
+	@GetMapping("/process/hourly/{productionLineProcessId}")
+	public HourlyProcessStatsResponse getHourlyProcessStats(
+		@PathVariable("productionLineProcessId") Long id,
+		@RequestParam(value = "year", required = false) Integer year,
+		@RequestParam(value = "month", required = false) Integer month,
+		@RequestParam(value = "day", required = false) Integer day
+	) {
+		if (year == null || month == null || day == null) {
+			return productionLineService.getTodayHourlyProcessStats(id);
+		}
+		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
+		return productionLineService.getHourlyProcessStats(dateStatPk);
 	}
 
 }
