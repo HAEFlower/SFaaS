@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <properties resource="database.properties" />
+
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="multipleResultSetsEnabled" value="true"/>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+        <setting name="logImpl" value="org.apache.ibatis.logging.stdout.StdOutImpl"/>
+    </settings>
+
+    <typeAliases>
+        <package name="com.sfass.bsamonitoring.user.model" />
+        <package name="com.sfass.bsamonitoring.inventory.dto"/>
+        <package name="com.sfass.bsamonitoring.production.productionLine.model" />
+        <package name="com.sfass.bsamonitoring.production.process.model" />
+    </typeAliases>
+
+<!--    <mappers>-->
+<!--        <mapper resource="mappers/mysql/main/user/userMapper.xml" />-->
+<!--    </mappers>-->
+    <!-- <mappers>
+        <mapper resource="mappers/mysql/main/inventory/InventoryMapper.xml"/>
+        <mapper resource="mappers/mysql/main/process/ProcessMapper.xml"/>
+        <mapper resource="mappers/mysql/main/productionLine/ProductionLineMapper.xml"/>
+    </mappers> -->
+</configuration>

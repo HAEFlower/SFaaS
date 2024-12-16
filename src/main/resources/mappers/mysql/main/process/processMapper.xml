@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfass.bsamonitoring.production.process.mapper.ProcessMapper">
+
+    <select id="getProcessById" resultType="com.sfass.bsamonitoring.production.process.model.Process" parameterType="Long">
+        SELECT *
+        FROM ${bsa.db.schema}.process
+        WHERE process_id = #{id}
+    </select>
+
+    <select id="getAllProcess" resultType="com.sfass.bsamonitoring.production.process.model.Process">
+        SELECT *
+        FROM ${bsa.db.schema}.process
+    </select>
+
+</mapper>
