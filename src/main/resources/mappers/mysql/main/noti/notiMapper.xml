@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfass.bsamonitoring.noti.mapper.NotiMapper">
+    <select id="getAllNoti" resultType="Noti">
+        SELECT *
+        FROM ${bsa.db.schema}.noti
+        ORDER BY noti_time desc
+    </select>
+</mapper>

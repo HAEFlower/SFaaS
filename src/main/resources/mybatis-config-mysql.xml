@@ -18,6 +18,7 @@
         <package name="com.sfass.bsamonitoring.production.productionLine.model" />
         <package name="com.sfass.bsamonitoring.production.process.model" />
         <package name="com.sfass.bsamonitoring.factory.environment.model" />
+        <package name="com.sfass.bsamonitoring.noti.model" />
     </typeAliases>
 
 <!--    <mappers>-->
