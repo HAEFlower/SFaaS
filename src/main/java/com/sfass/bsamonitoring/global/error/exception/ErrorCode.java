@@ -27,6 +27,8 @@ public enum ErrorCode {
 	// Process
 	PROCESS_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 공정입니다."),
 
+	// Inventory
+	INVENTORY_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 재고 정보입니다."),
 	;
 	private final HttpStatus httpStatus;
 	private final String message;
