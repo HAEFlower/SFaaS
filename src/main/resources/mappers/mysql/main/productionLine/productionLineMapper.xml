@@ -3,10 +3,10 @@
 <mapper namespace="com.sfass.bsamonitoring.production.productionLine.mapper.ProductionLineMapper">
 
     <select id="getProductionLineById" resultType="ProductionLine" parameterType="Long">
-        SELECT *
-        FROM ${bsa.db.schema}.production_line
-        WHERE production_line_id = #{id}
-    </select>
+    SELECT *
+    FROM ${bsa.db.schema}.production_line
+    WHERE production_line_id = #{id}
+</select>
 
     <select id="getAllProduction" resultType="ProductionLine">
         SELECT *
@@ -19,7 +19,7 @@
         WHERE production_line_id = #{productionLineId}
     </update>
 
-    <update id="updateDailyTarget" parameterType="ProductionLine">
+    <update id="updateDailyTarget" parameterType="com.sfass.bsamonitoring.production.productionLine.model.ProductionLine">
         UPDATE ${bsa.db.schema}.production_line
         SET daily_target = #{dailyTarget}
         WHERE production_line_id = #{productionLineId}
