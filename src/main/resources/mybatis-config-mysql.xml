@@ -23,5 +23,9 @@
 <!--    <mappers>-->
 <!--        <mapper resource="mappers/mysql/main/user/userMapper.xml" />-->
 <!--    </mappers>-->
-
+    <!-- <mappers>
+        <mapper resource="mappers/mysql/main/inventory/InventoryMapper.xml"/>
+        <mapper resource="mappers/mysql/main/process/ProcessMapper.xml"/>
+        <mapper resource="mappers/mysql/main/productionLine/ProductionLineMapper.xml"/>
+    </mappers> -->
 </configuration>
