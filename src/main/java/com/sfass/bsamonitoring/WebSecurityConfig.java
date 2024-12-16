@@ -21,13 +21,11 @@ public class WebSecurityConfig {
             corsConfiguration.addAllowedHeader("*");
             corsConfiguration.setAllowCredentials(true);
             return corsConfiguration;
-        }));
-
-        // CSRF 비활성화
-        http.csrf(AbstractHttpConfigurer::disable);
+        }))
+                .csrf(csrf -> csrf.disable())
 
         // 모든 요청 허용 (테스트용)
-        http.authorizeHttpRequests(authorize -> authorize
+        .authorizeHttpRequests(authorize -> authorize
                 .anyRequest().permitAll()
         );
 
