@@ -6,8 +6,8 @@
         SELECT DISTINCT
         p.name,
         p.part_id AS product_code,
-        pl.production_line_id AS production_line,
-        pr.process_id AS process_code,
+        pl.product AS production_line,
+        pr.name AS process_code,
         DATE_FORMAT(p.last_warehousing_date, '%y-%m-%d') AS last_update,
         p.current_quantity,
         p.minimum_required_quantity AS minimum_quantity
