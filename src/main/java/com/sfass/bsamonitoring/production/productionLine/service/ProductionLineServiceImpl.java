@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.sfass.bsamonitoring.global.Util.MathUtil;
 import com.sfass.bsamonitoring.production.productionLine.exception.ProductionLineNotFoundException;
 import com.sfass.bsamonitoring.production.productionLine.mapper.ProductionLineMapper;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentDailyProductionLineStats;
@@ -23,6 +24,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProduction
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
@@ -236,5 +238,18 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 				.toList();
 		return HourlyProcessStatsResponse.from(process, details);
 	}
+
+	@Override
+	public List<ProductionLineFault> getFaultStats() {
+		List<ProductionLineFault> result = productionLineMapper.getProductionLIneFault();
+
+		result.forEach(data -> {
+			double faultRate = ((double) data.getFaultCnt() / data.getTotalCnt()) * 100;
+			data.setFaultRate(MathUtil.roundToTwoDecimalPlaces(faultRate));
+		});
+
+		return result;
+	}
+
 
 }

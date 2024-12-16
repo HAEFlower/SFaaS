@@ -10,6 +10,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
 import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStatsResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
 public interface ProductionLineService {
 	ProductionLine getProductionLineById(Long id);
@@ -32,4 +33,6 @@ public interface ProductionLineService {
 	HourlyProcessStatsResponse getTodayHourlyProcessStats(Long id);
 
 	HourlyProcessStatsResponse getHourlyProcessStats(DateStatPk dateStatPk);
+
+	List<ProductionLineFault> getFaultStats();
 }

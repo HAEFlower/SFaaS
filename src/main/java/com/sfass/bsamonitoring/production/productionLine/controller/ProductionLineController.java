@@ -21,6 +21,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcess;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 import com.sfass.bsamonitoring.production.productionLine.service.ProductionLineService;
 
 import lombok.RequiredArgsConstructor;
@@ -102,6 +103,11 @@ public class ProductionLineController {
 		}
 		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
 		return productionLineService.getHourlyProcessStats(dateStatPk);
+	}
+
+	@GetMapping("/fault")
+	public List<ProductionLineFault> getFaultStats() {
+		return productionLineService.getFaultStats();
 	}
 
 }
