@@ -22,7 +22,6 @@ public class InventoryService {
 
     private final InventoryMapper inventoryMapper;
 
-    @Cacheable(value = "inventoryItems", key = "#searchDTO")
     public List<InventoryDTO> getInventoryItems(InventorySearchDTO searchDTO) {
         log.debug("Fetching inventory items with search criteria: {}", searchDTO);
 
@@ -30,15 +29,16 @@ public class InventoryService {
 
         List<InventoryDTO> items = inventoryMapper.selectInventoryItems(searchDTO);
 
-        if (items.isEmpty() && (searchDTO.getProcessId() != null || searchDTO.getProductId() != null)) {
-            throw new CustomException(ErrorCode.INVENTORY_NOT_FOUND);
+        // 검색 결과를 로그로 기록
+        if (items.isEmpty()) {
+            log.info("No inventory items found for search criteria: {}", searchDTO);
         }
 
-        log.debug("Found {} inventory items", items.size());
-        return items;
+        return items; // 빈 리스트 반환
     }
 
     private void validateSearchCriteria(InventorySearchDTO searchDTO) {
+        // 검색 조건 유효성 검사
         if (searchDTO.getProcessId() != null && !searchDTO.getProcessId().matches("^\\d+$")) {
             throw new CustomException(ErrorCode.QUERY_TYPE_MISMATCH);
         }

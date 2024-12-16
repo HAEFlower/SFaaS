@@ -1,6 +1,8 @@
 package com.sfass.bsamonitoring.inventory.controller;
 
 import com.sfass.bsamonitoring.global.GlobalResponse;
+
+import com.sfass.bsamonitoring.inventory.dto.response.ApiResponse;
 import com.sfass.bsamonitoring.inventory.dto.request.InventorySearchDTO;
 import com.sfass.bsamonitoring.inventory.dto.response.InventoryDTO;
 import com.sfass.bsamonitoring.inventory.dto.response.InventoryListResponse;
@@ -21,21 +23,23 @@ import java.util.List;
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/api/inventory")
+@RequestMapping("/api/v1/inventory")
 @RequiredArgsConstructor
 public class InventoryController {
 
     private final InventoryService inventoryService;
 
     @GetMapping("/items")
-    public ResponseEntity<GlobalResponse> getInventoryItems(
+    public ResponseEntity<ApiResponse<InventoryListResponse>> getInventoryItems(
             @Valid @ModelAttribute InventorySearchDTO searchDTO) {
         log.info("Searching inventory with criteria: {}", searchDTO);
         List<InventoryDTO> items = inventoryService.getInventoryItems(searchDTO);
+
         InventoryListResponse response = InventoryListResponse.builder()
                 .items(items)
                 .totalItems(items.size())
                 .build();
-        return ResponseEntity.ok(GlobalResponse.ok(response));
+
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 }
