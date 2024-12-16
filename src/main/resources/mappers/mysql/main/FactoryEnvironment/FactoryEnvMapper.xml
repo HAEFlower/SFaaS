@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sfass.bsamonitoring.factory.environment.mapper.FactoryEnvMapper">
+    <select id="getCurrentEnv" resultType="FactoryStats">
+        SELECT
+            el.Temperature AS curr_temperature,
+            el.humidity AS curr_humidity,
+            el.air_condition AS curr_air_condition,
+            el.air_quality AS curr_air_quality,
+            e.Temperature AS target_temperature,
+            e.humidity AS target_humidity,
+            e.air_condition AS target_air_condition,
+            e.air_quality AS target_air_quality
+        FROM
+            ${bsa.db.schema}.environment_log el
+                CROSS JOIN
+            ${bsa.db.schema}.environment e
+        WHERE
+            el.environment_log_id = (SELECT MAX(environment_log_id) FROM ${bsa.db.schema}.environment_log)
+          AND e.environment_id = (SELECT MAX(environment_id) FROM ${bsa.db.schema}.environment)
+        LIMIT 1;
+    </select>
+
+    <update id="updateTargetTemperature" parameterType="Double">
+        UPDATE ${bsa.db.schema}.environment
+        SET temperature = #{newTarget}
+        WHERE environment_id = (
+            SELECT environment_id FROM (
+                SELECT MAX(environment_id) AS environment_id
+                FROM ${bsa.db.schema}.environment) AS temp
+        );
+    </update>
+</mapper>
