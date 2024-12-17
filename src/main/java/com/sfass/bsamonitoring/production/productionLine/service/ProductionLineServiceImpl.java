@@ -1,6 +1,7 @@
 package com.sfass.bsamonitoring.production.productionLine.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProduction
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -256,13 +258,28 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 	}
 
 	@Override
-	public List<ProductionLineFault> getFaultStats() {
-		List<ProductionLineFault> result = productionLineMapper.getProductionLIneFault();
+	public List<HourWithFault> getFaultStats() {
+		List<ProductionLineFault> list = productionLineMapper.getProductionLIneFault();
 
-		result.forEach(data -> {
+		list.forEach(data -> {
 			double faultRate = ((double) data.getFaultCnt() / data.getTotalCnt()) * 100;
 			data.setFaultRate(MathUtil.roundToTwoDecimalPlaces(faultRate));
 		});
+
+		Map<Integer, HourWithFault> map = new HashMap<>();
+		for (int i = 0; i < 24; ++i) {
+			map.put(i, new HourWithFault(i));
+		}
+
+		List<HourWithFault> result = new ArrayList<>();
+
+		list.forEach(data -> {
+			map.get(data.getHour()).addData(data);
+		});
+
+		for (int i = 0; i < 24; i++) {
+			result.add(map.get(i));
+		}
 
 		return result;
 	}

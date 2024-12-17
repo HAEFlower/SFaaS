@@ -21,6 +21,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcess;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 import com.sfass.bsamonitoring.production.productionLine.service.ProductionLineService;
 
@@ -108,7 +109,7 @@ public class ProductionLineController {
 	}
 
 	@GetMapping("/fault")
-	public List<ProductionLineFault> getFaultStats() {
+	public List<HourWithFault> getFaultStats() {
 		return productionLineService.getFaultStats();
 	}
 

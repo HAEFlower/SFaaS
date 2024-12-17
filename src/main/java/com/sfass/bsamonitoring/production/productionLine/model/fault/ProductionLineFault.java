@@ -8,5 +8,6 @@ public class ProductionLineFault {
 	private String productName;
 	private Long totalCnt;
 	private Long faultCnt;
+	private Integer hour;
 	private Double faultRate;
 }

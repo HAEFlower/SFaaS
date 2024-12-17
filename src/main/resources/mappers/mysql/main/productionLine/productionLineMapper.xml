@@ -184,7 +184,8 @@
         SELECT f.production_line_id,
                p.product as product_name,
                f.total_cnt,
-               f.fault_cnt
+               f.fault_cnt,
+               f.hour
         FROM ${bsa.db.schema}.production_line_fault as f
             LEFT JOIN
         ${bsa.db.schema}.production_line p ON f.production_line_id = p.production_line_id
