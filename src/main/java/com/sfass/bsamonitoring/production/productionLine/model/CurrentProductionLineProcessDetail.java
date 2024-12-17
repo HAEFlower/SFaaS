@@ -1,12 +1,12 @@
 package com.sfass.bsamonitoring.production.productionLine.model;
 
+import com.sfass.bsamonitoring.global.Util.PercentageGeneratorUtil;
 import com.sfass.bsamonitoring.global.common.LevelEnum;
 import com.sfass.bsamonitoring.global.common.StatusEnum;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-// TODO: 불량률 추가 고려
 @Data
 @AllArgsConstructor
 public class CurrentProductionLineProcessDetail {
@@ -17,6 +17,7 @@ public class CurrentProductionLineProcessDetail {
 	private String processName;
 	private Integer baseExecTime; // sec
 	private Long avgTime;
+	private String faultRate;
 	private LevelEnum avgLevel;
 	private Integer lastExecTime;
 	private LevelEnum lastExecTimeLevel;
@@ -36,6 +37,7 @@ public class CurrentProductionLineProcessDetail {
 			process.getProcessName(),
 			process.getBaseExecTime(),
 			avgTime,
+			PercentageGeneratorUtil.formatPercentage(PercentageGeneratorUtil.generatePercentage()),
 			avgLevel,
 			process.getLastExecTime(),
 			lastLevel,
