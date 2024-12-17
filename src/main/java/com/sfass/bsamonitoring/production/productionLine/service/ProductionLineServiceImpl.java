@@ -205,7 +205,7 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 	}
 
 	@Override
-	public HourlyProcessStatsResponse getTodayHourlyProcessStats(Long id) {
+	public HourlyProcessStatsResponse getTodayHourlyProcessStats(Long productionLineId, Long processId) {
 		LocalDateTime curr = LocalDateTime.now();
 		Integer year = curr.getYear();
 		Integer month = curr.getMonthValue();
@@ -213,10 +213,14 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		// Integer day = curr.getDayOfMonth();
 		Integer day = 14;
 
-		DateStatPk dailyPk = new DateStatPk(id, year, month, day);
+		DateStatPk dailyPk = new DateStatPk(0L, year, month, day);
+		Map<String, Object> map = new HashMap<>();
+		map.put("dailyPk", dailyPk);
+		map.put("productionLineId", productionLineId);
+		map.put("processId", processId);
 
-		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(dailyPk);
-		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOne(id);
+		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(map);
+		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOneByMap(map);
 
 		List<HourlyProductionLineProcessDetail> details =
 			hourlyProcessStatsList.stream()
@@ -226,15 +230,23 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 	}
 
 	@Override
-	public HourlyProcessStatsResponse getHourlyProcessStats(DateStatPk dateStatPk) {
+	public HourlyProcessStatsResponse getHourlyProcessStats(
+		DateStatPk dateStatPk,
+		Long productionLineId,
+		Long processId
+		) {
 		Integer year = dateStatPk.year();
 		Integer month = dateStatPk.month();
 		Integer day = dateStatPk.day();
 
 		DateStatPk dailyPk = new DateStatPk(dateStatPk.id(), year, month, day);
+		Map<String, Object> map = new HashMap<>();
+		map.put("dailyPk", dailyPk);
+		map.put("productionLineId", productionLineId);
+		map.put("processId", processId);
 
-		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(dailyPk);
-		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOne(dateStatPk.id());
+		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(map);
+		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOneByMap(map);
 
 		List<HourlyProductionLineProcessDetail> details =
 			hourlyProcessStatsList.stream()

@@ -162,7 +162,7 @@
         WHERE plp.production_line_id = #{productionLineId} AND plp.process_id = #{processId}
     </select>
 
-    <select id="getHourlyProcessStats" resultType="HourlyProcessStats" parameterType="DateStatPk">
+    <select id="getHourlyProcessStats" resultType="HourlyProcessStats" parameterType="Map">
         SELECT hour,
                avg_time,
                total_cnt,
@@ -173,8 +173,8 @@
                     COUNT(*) AS total_cnt,
                     COUNT(CASE WHEN inspection_result = 0 THEN 1 END) AS fault_cnt
              FROM ${bsa.db.schema}.process_log
-             WHERE production_line_process_id = #{id}
-               AND year = #{year} AND month = #{month} AND day = #{day}
+             WHERE production_line_id = #{productionLineId} AND process_id = #{processId}
+               AND year = #{dailyPk.year} AND month = #{dailyPk.month} AND day = #{dailyPk.day}
              GROUP BY hour
          ) AS subquery
         ORDER BY hour

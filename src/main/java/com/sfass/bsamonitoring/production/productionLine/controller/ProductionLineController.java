@@ -92,18 +92,19 @@ public class ProductionLineController {
 		return productionLineService.getCurrentProcessStats(id);
 	}
 
-	@GetMapping("/process/hourly/{productionLineProcessId}")
+	@GetMapping("{productionLineId}/process/hourly/{processId}")
 	public HourlyProcessStatsResponse getHourlyProcessStats(
-		@PathVariable("productionLineProcessId") Long id,
+		@PathVariable("productionLineId") Long productionLineId,
+		@PathVariable("processId") Long processId,
 		@RequestParam(value = "year", required = false) Integer year,
 		@RequestParam(value = "month", required = false) Integer month,
 		@RequestParam(value = "day", required = false) Integer day
 	) {
 		if (year == null || month == null || day == null) {
-			return productionLineService.getTodayHourlyProcessStats(id);
+			return productionLineService.getTodayHourlyProcessStats(productionLineId, processId);
 		}
-		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
-		return productionLineService.getHourlyProcessStats(dateStatPk);
+		DateStatPk dateStatPk = new DateStatPk(0L, year, month, day);
+		return productionLineService.getHourlyProcessStats(dateStatPk, productionLineId, processId);
 	}
 
 	@GetMapping("/fault")

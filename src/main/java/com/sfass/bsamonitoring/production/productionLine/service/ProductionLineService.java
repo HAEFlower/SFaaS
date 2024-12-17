@@ -30,9 +30,9 @@ public interface ProductionLineService {
 
 	CurrentProductionLineProcessDetail updateProductionLineProcessBaseTime(Long productionLineProcessId, Long processId, NewTarget newTarget);
 
-	HourlyProcessStatsResponse getTodayHourlyProcessStats(Long id);
+	HourlyProcessStatsResponse getTodayHourlyProcessStats(Long productionLIneId, Long processId);
 
-	HourlyProcessStatsResponse getHourlyProcessStats(DateStatPk dateStatPk);
+	HourlyProcessStatsResponse getHourlyProcessStats(DateStatPk dateStatPk, Long productionLineId, Long processId);
 
 	List<ProductionLineFault> getFaultStats();
 }
