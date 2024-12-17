@@ -28,7 +28,7 @@ public interface ProductionLineService {
 
 	CurrentProductionLineProcessResponse getCurrentProcessStats(Long id);
 
-	CurrentProductionLineProcessDetail updateProductinLineProcessBaseTime(Long productionLineProcessId, NewTarget newTarget);
+	CurrentProductionLineProcessDetail updateProductionLineProcessBaseTime(Long productionLineProcessId, Long processId, NewTarget newTarget);
 
 	HourlyProcessStatsResponse getTodayHourlyProcessStats(Long id);
 
