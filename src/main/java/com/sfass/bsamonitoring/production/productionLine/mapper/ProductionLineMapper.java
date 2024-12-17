@@ -42,7 +42,7 @@ public interface ProductionLineMapper {
 
 	ProductionLineProcessWithName getProductionLineProcessWithNameOne(Long id);
 
-	List<HourlyProcessStats> getHourlyProcessStats(DateStatPk dailyPk);
+	List<HourlyProcessStats> getHourlyProcessStats(Map<String, Object> map);
 
 	List<ProductionLineFault> getProductionLIneFault();
 
