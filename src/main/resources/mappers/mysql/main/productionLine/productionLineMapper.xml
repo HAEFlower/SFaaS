@@ -191,4 +191,24 @@
         ${bsa.db.schema}.production_line p ON f.production_line_id = p.production_line_id
         ORDER BY f.production_line_id
     </select>
+
+    <select id="getProcessLog" resultType="ProcessLog" parameterType="Map">
+        SELECT
+            process_id,
+            year,
+            month,
+            day,
+            hour,
+            minute,
+            inspection_result as fault,
+            exec_time,
+            contents
+        FROM (
+            SELECT *
+            FROM ${bsa.db.schema}.process_log
+            WHERE production_line_id = #{productionLineId} AND process_id = #{processId}
+            ORDER BY process_log_id DESC
+            LIMIT 50
+            ) subquery
+    </select>
 </mapper>

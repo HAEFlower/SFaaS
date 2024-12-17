@@ -23,6 +23,8 @@ import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStat
 import com.sfass.bsamonitoring.production.productionLine.model.HourlyProductionLineProcessDetail;
 import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
+import com.sfass.bsamonitoring.production.productionLine.model.ProcessLog;
+import com.sfass.bsamonitoring.production.productionLine.model.ProcessLogResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
@@ -300,5 +302,18 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		return result;
 	}
 
+	@Override
+	public List<ProcessLogResponse> getProcessLog(Long productionId, Long processId) {
+		Map<String, Long> map = new HashMap<>();
+		map.put("productionLineId", productionId);
+		map.put("processId", processId);
+		List<ProcessLog> list = productionLineMapper.getProcessLog(map);
+
+		List<ProcessLogResponse> result =
+			list.stream()
+				.map(ProcessLogResponse::from)
+				.toList();
+		return result;
+	}
 
 }

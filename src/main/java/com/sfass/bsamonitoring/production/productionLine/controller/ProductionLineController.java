@@ -3,7 +3,6 @@ package com.sfass.bsamonitoring.production.productionLine.controller;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,16 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentDailyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentMonthlyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessDetail;
+import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
-import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStats;
 import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStatsResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
+import com.sfass.bsamonitoring.production.productionLine.model.ProcessLogResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
-import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
-import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcess;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
-import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 import com.sfass.bsamonitoring.production.productionLine.service.ProductionLineService;
 
 import lombok.RequiredArgsConstructor;
@@ -113,6 +110,14 @@ public class ProductionLineController {
 	@GetMapping("/fault")
 	public List<HourWithFault> getFaultStats() {
 		return productionLineService.getFaultStats();
+	}
+
+	@GetMapping("{productionId}/process/{processId}/log")
+	public List<ProcessLogResponse> getProcessLog(
+		@PathVariable Long productionId,
+		@PathVariable Long processId
+	) {
+		return productionLineService.getProcessLog(productionId, processId);
 	}
 
 }
