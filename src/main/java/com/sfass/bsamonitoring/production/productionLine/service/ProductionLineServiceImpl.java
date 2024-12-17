@@ -25,6 +25,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProduction
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
+import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
@@ -61,9 +62,14 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		return result;
 	}
 
-	// TODO: 현재 수량도 같이 전송하는 고도화 고려
+
 	@Override
-	public ProductionLine updateProductionMonthlyTarget(Long id, Long newTarget) {
+	public ProductionLineUpdateResponse updateProductionMonthlyTarget(Long id, Long newTarget) {
+		LocalDateTime curr = LocalDateTime.now();
+		Integer year = curr.getYear();
+		Integer month = curr.getMonthValue();
+
+
 		ProductionLine result = productionLineMapper.getProductionLineById(id);
 
 		if (result == null) {
@@ -72,12 +78,19 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 
 		result.setMonthlyTarget(newTarget);
 		productionLineMapper.updateMonthlyTarget(result);
-		return result;
+		DateStatPk dateStatPk = new DateStatPk(id, year, month, 0);
+		MonthlyProductionLineStats stats = productionLineMapper.getMonthlyStats(dateStatPk);
+		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
 
-	// TODO: 현재 수량도 같이 전송하는 고도화 고려
 	@Override
-	public ProductionLine updateProductionDailyTarget(Long id, Long newTarget) {
+	public ProductionLineUpdateResponse updateProductionDailyTarget(Long id, Long newTarget) {
+		LocalDateTime curr = LocalDateTime.now();
+		Integer year = curr.getYear();
+		Integer month = curr.getMonthValue();
+		Integer day = curr.getDayOfMonth();
+		day = 14;
+
 		ProductionLine result = productionLineMapper.getProductionLineById(id);
 
 		if (result == null) {
@@ -85,8 +98,11 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		}
 
 		result.setDailyTarget(newTarget);
+		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
+		DailyProductionLineStats stats = productionLineMapper.getDailyStats(dateStatPk);
 		productionLineMapper.updateDailyTarget(result);
-		return result;
+
+		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
 
 	@Override

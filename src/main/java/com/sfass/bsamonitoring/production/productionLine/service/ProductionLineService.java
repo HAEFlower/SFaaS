@@ -10,14 +10,15 @@ import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
 import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStatsResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
+import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
 public interface ProductionLineService {
 	ProductionLine getProductionLineById(Long id);
 	List<ProductionLine> getProductionList();
-	ProductionLine updateProductionMonthlyTarget(Long id, Long newTarget);
-	ProductionLine updateProductionDailyTarget(Long id, Long newTarget);
+	ProductionLineUpdateResponse updateProductionMonthlyTarget(Long id, Long newTarget);
+	ProductionLineUpdateResponse updateProductionDailyTarget(Long id, Long newTarget);
 
 	CurrentMonthlyProductionLineStats getCurrMonthlyStats(Long id);
 

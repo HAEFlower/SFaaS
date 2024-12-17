@@ -3,6 +3,7 @@ package com.sfass.bsamonitoring.production.productionLine.controller;
 import java.util.Collections;
 import java.util.List;
 
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcess;
+import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 import com.sfass.bsamonitoring.production.productionLine.service.ProductionLineService;
@@ -45,12 +47,12 @@ public class ProductionLineController {
 	}
 
 	@PostMapping("/monthly/{id}")
-	public ProductionLine updateMontlyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
+	public ProductionLineUpdateResponse updateMonthlyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
 		return productionLineService.updateProductionMonthlyTarget(id, newTarget.newTarget());
 	}
 
 	@PostMapping("/daily/{id}")
-	public ProductionLine updateDailyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
+	public ProductionLineUpdateResponse updateDailyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
 		return productionLineService.updateProductionDailyTarget(id, newTarget.newTarget());
 	}
 
