@@ -175,7 +175,9 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 	}
 
 	@Override
-	public CurrentProductionLineProcessDetail updateProductinLineProcessBaseTime(Long id,
+	public CurrentProductionLineProcessDetail updateProductionLineProcessBaseTime(
+		Long productionLineId,
+		Long processId,
 		NewTarget newTarget) {
 
 		Long newValue = newTarget.newTarget();
@@ -184,19 +186,21 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		Integer month = curr.getMonthValue();
 		Integer day = curr.getDayOfMonth();
 
-		DateStatPk dailyPk = new DateStatPk(id, year, month, day);
+		DateStatPk dailyPk = new DateStatPk(productionLineId, year, month, day);
 
 		Map<String, Object> statMap = new HashMap<>();
 		statMap.put("dailyPk", dailyPk);
-		statMap.put("id", id);
+		statMap.put("productionLineId", productionLineId);
+		statMap.put("processId", processId);
 
 		Map<String, Object> processMap = new HashMap<>();
-		processMap.put("id", id);
+		processMap.put("productionLineId", productionLineId);
+		processMap.put("processId", processId);
 		processMap.put("newValue", newValue);
 
 		DailyProcessStats stats = productionLineMapper.getDailyProcessStatsById(statMap);
 		productionLineMapper.updateProductionLineProcessBaseTime(processMap);
-		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOne(id);
+		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOneByMap(processMap);
 		return CurrentProductionLineProcessDetail.from(stats, process);
 	}
 

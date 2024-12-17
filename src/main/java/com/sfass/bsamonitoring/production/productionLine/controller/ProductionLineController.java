@@ -78,12 +78,13 @@ public class ProductionLineController {
 		return productionLineService.getDailyStatsByYearAndMonth(id, year, month);
 	}
 
-	@PostMapping("/process/{productionLineProcessId}")
+	@PostMapping("/{productionLineId}/process/{processId}")
 	public CurrentProductionLineProcessDetail updateProductionLineProcessBaseTime(
-		@PathVariable Long productionLineProcessId,
+		@PathVariable Long productionLineId,
+		@PathVariable Long processId,
 		@RequestBody NewTarget newTarget
 	) {
-		return productionLineService.updateProductinLineProcessBaseTime(productionLineProcessId, newTarget);
+		return productionLineService.updateProductionLineProcessBaseTime(productionLineId, processId, newTarget);
 	}
 
 	@GetMapping("/{id}/process")

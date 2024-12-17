@@ -45,4 +45,6 @@ public interface ProductionLineMapper {
 	List<HourlyProcessStats> getHourlyProcessStats(DateStatPk dailyPk);
 
 	List<ProductionLineFault> getProductionLIneFault();
+
+	ProductionLineProcessWithName getProductionLineProcessWithNameOneByMap(Map<String, Object> processMap);
 }
