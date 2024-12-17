@@ -28,4 +28,9 @@ public class FactoryEnvController {
 	public FactoryEnvResponse updateTargetTemperature (@RequestBody DoubleNewTarget newTarget) {
 		return factoryEnvService.updateTargetTemperature(newTarget);
 	}
+
+	@PostMapping("/air-condition")
+	public FactoryEnvResponse updateTargetAirCondition (@RequestBody DoubleNewTarget newTarget) {
+		return factoryEnvService.updateTargetAirCondition(newTarget);
+	}
 }
