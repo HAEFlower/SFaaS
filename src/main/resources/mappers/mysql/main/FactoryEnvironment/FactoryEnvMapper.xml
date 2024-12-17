@@ -30,4 +30,15 @@
                 FROM ${bsa.db.schema}.environment) AS temp
         );
     </update>
+
+    <update id="updateTargetAirCondition" parameterType="Double">
+        UPDATE ${bsa.db.schema}.environment
+        SET air_condition = #{newTarget}
+        WHERE environment_id = (
+            SELECT environment_id FROM (
+                SELECT MAX(environment_id) AS environment_id
+                FROM ${bsa.db.schema}.environment) AS temp
+        );
+    </update>
+
 </mapper>

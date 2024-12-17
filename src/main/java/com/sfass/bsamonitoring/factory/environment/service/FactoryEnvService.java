@@ -8,4 +8,6 @@ public interface FactoryEnvService {
 	FactoryEnvResponse getCurrentEnv();
 
 	FactoryEnvResponse updateTargetTemperature(DoubleNewTarget newTarget);
+
+	FactoryEnvResponse updateTargetAirCondition(DoubleNewTarget newTarget);
 }
