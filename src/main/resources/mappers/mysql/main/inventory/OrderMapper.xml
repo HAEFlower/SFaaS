@@ -16,17 +16,19 @@
     </select>
 
     <select id="getNextOrderSequence" resultType="int">
-        INSERT INTO ${bsa.db.schema}.order_sequence (sequence, order_date)
-        VALUES (
-                   COALESCE(
-                           (SELECT MAX(sequence) + 1
-                            FROM ${bsa.db.schema}.order_sequence
-                            WHERE DATE(order_date) = CURDATE()),
-            1
-        ),
-                   CURDATE()
-               );
-        SELECT LAST_INSERT_ID();
+        SELECT COALESCE(
+                       (SELECT MAX(sequence)
+                        FROM ${bsa.db.schema}.order_sequence
+                        WHERE DATE(order_date) = CURDATE()),
+        0
+    ) + 1 AS next_sequence;
     </select>
+
+    <insert id="insertOrderSequence">
+        INSERT INTO ${bsa.db.schema}.order_sequence
+            (sequence, order_date)
+        VALUES
+            (#{sequence}, CURDATE())
+    </insert>
 
 </mapper>

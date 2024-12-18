@@ -39,6 +39,7 @@ public class OrderService {
     private String generateOrderId() {
         String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         int sequence = orderMapper.getNextOrderSequence();
+        orderMapper.insertOrderSequence(sequence);
         return String.format("ORD-%s-%03d", dateStr, sequence);
     }
 }
