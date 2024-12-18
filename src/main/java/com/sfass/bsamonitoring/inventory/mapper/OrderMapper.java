@@ -8,14 +8,14 @@ public interface OrderMapper {
     void updateInventoryQuantity(
             @Param("productId") Long productId,
             @Param("processId") Long processId,
-            @Param("partId") Long partId,
+            @Param("productCode") Long productCode,
             @Param("quantity") Integer quantity
     );
 
     Integer getCurrentQuantity(
             @Param("productId") Long productId,
             @Param("processId") Long processId,
-            @Param("partId") Long partId
+            @Param("productCode") Long productCode
     );
 
     boolean checkProcessLineExists(
