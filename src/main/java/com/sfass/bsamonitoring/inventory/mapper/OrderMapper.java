@@ -5,12 +5,12 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface OrderMapper {
-    void updateInventoryQuantity(@Param("productCode") String productCode,
-                                 @Param("quantity") Integer quantity,
+    void updateInventoryQuantity(@Param("partId") Long partId,
                                  @Param("productId") String productId,
-                                 @Param("processId") String processId);
+                                 @Param("processId") String processId,
+                                 @Param("quantity") Integer quantity);
 
-    Integer getCurrentQuantity(@Param("productCode") String productCode,
+    Integer getCurrentQuantity(@Param("partId") Long partId,
                                @Param("productId") String productId,
                                @Param("processId") String processId);
 

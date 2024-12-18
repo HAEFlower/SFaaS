@@ -10,7 +10,7 @@ public class OrderResponseDTO {
     private String orderId;
     private String productId;
     private String processId;
-    private String productCode;
+    private Long partId;
     private Integer quantity;
     private LocalDateTime orderTime;
     private Integer updatedQuantity;
