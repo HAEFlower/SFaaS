@@ -27,4 +27,6 @@ public interface UserMapper {
 	void updateAuth(UserUpdate update);
 
 	User getUserById(@Param("userId") String userId);
+
+	void deleteUser(String empNo);
 }

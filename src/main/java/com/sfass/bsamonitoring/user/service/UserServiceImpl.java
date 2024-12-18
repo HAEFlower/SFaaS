@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.sfass.bsamonitoring.user.exception.UserAlreadyExits;
-import com.sfass.bsamonitoring.user.userEnum.UserAuth;
+
 import org.springframework.stereotype.Service;
 
 import com.sfass.bsamonitoring.global.common.userConstants.UserConstants;
@@ -88,6 +88,19 @@ public class UserServiceImpl implements UserService {
 
 		userMapper.updateAuth(update);
 		return new UserUpdateResponse(UserConstants.USER_AUTH_UPDATE_SUCCESS);
+	}
+
+	@Override
+	public UserUpdateResponse deleteUser(UserUpdate delete) {
+		User requester = userMapper.getUserByEmpNo(delete.getRequestEmpNo());
+		User targetUser = userMapper.getUserByEmpNo(delete.getTargetEmpNo());
+
+		if (!requester.getAuth().isHigherAuthority(targetUser.getAuth())) {
+			return new UserUpdateResponse(UserConstants.USER_DELETE_FAIL);
+		}
+
+		userMapper.deleteUser(delete.getTargetEmpNo());
+		return new UserUpdateResponse(UserConstants.USER_DELETE_SUCCESS);
 	}
 
 	private String generateEmpNo() {

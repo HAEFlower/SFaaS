@@ -17,4 +17,6 @@ public interface UserService {
 	User registerUser(UserRegisterDto userRegisterDto);
 
 	UserUpdateResponse updateUserPosition(UserUpdate update);
+
+	UserUpdateResponse deleteUser(UserUpdate delete);
 }
