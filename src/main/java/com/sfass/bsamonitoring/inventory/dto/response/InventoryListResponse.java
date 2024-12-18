@@ -11,6 +11,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InventoryListResponse {
-    private List<InventoryDTO> items;
-    private Integer totalItems;
+    private List<InventoryDTO> items;    // 재고 아이템 목록
+    private Long totalItems;             // 전체 아이템 수
 }

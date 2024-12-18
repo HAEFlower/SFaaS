@@ -11,11 +11,11 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InventoryDTO {
-    private String name;
-    private String productCode;
-    private String productionLine;
-    private String processCode;
-    private String lastUpdate;
-    private Integer currentQuantity;
-    private Integer minimumQuantity;
+    private String name;                 // 제품명
+    private String productCode;          // 제품코드 (part_id)
+    private String productionLine;       // 생산라인
+    private String processCode;          // 공정코드
+    private String lastUpdate;           // 입고날짜
+    private Integer currentQuantity;     // 현재수량
+    private Integer minimumQuantity;     // 최소필요수량
 }

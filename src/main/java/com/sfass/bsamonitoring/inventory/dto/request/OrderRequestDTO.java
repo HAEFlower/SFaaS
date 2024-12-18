@@ -6,6 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 
 @Data
 public class OrderRequestDTO {
+    @NotBlank(message = "생산라인 ID는 필수입니다")
+    private String productId;
+
+    @NotBlank(message = "공정라인 ID는 필수입니다")
+    private String processId;
+
     @NotBlank(message = "제품 코드는 필수입니다")
     private String productCode;
 
