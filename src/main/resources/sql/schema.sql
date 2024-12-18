@@ -47,3 +47,11 @@ CREATE TABLE IF NOT EXISTS `production_line_process` (
     REFERENCES `process` (`process_id`),
     INDEX `idx_production_line_process` (`production_line_id`, `process_id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `order_sequence` (
+                                                `sequence_id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                `sequence` INT NOT NULL,
+                                                `order_date` DATE NOT NULL,
+                                                PRIMARY KEY (`sequence_id`),
+    INDEX `idx_order_date` (`order_date`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

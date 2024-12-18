@@ -3,7 +3,7 @@
 <mapper namespace="com.sfass.bsamonitoring.inventory.mapper.OrderMapper">
 
     <update id="updateInventoryQuantity">
-        UPDATE part
+        UPDATE ${bsa.db.schema}.part
         SET current_quantity = current_quantity + #{quantity},
             last_warehousing_date = NOW()
         WHERE part_id = #{productCode}
@@ -11,14 +11,22 @@
 
     <select id="getCurrentQuantity" resultType="Integer">
         SELECT current_quantity
-        FROM part
+        FROM ${bsa.db.schema}.part
         WHERE part_id = #{productCode}
     </select>
 
     <select id="getNextOrderSequence" resultType="int">
-        SELECT COALESCE(MAX(sequence), 0) + 1
-        FROM order_sequence
-        WHERE DATE(order_date) = CURDATE()
+        INSERT INTO ${bsa.db.schema}.order_sequence (sequence, order_date)
+        VALUES (
+                   COALESCE(
+                           (SELECT MAX(sequence) + 1
+                            FROM ${bsa.db.schema}.order_sequence
+                            WHERE DATE(order_date) = CURDATE()),
+            1
+        ),
+                   CURDATE()
+               );
+        SELECT LAST_INSERT_ID();
     </select>
 
 </mapper>
