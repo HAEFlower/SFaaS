@@ -59,15 +59,98 @@ SELECT
     plp.production_line_id,
     pt.part_id,
     NOW(),
-    100,  -- 초기 재고 수량
+    100,  -- 초기 재고 수량 가정
     CASE
         WHEN p.name IN ('BMA로딩', 'BMA가체결', 'BMA자동체결') THEN 50
         WHEN p.name IN ('BPA조립', '전장품조립', 'W/H-버스바조립') THEN 30
         ELSE 20
-        END
+        END AS minimum_required_quantity
 FROM process p
          JOIN production_line_process plp ON p.process_id = plp.process_id
-         CROSS JOIN part pt;
+         JOIN part pt ON (
+    (
+        p.name LIKE '%BMA%'
+            AND pt.name IN (
+                            '2P6S 배터리 모듈(단위 모듈)',
+                            '3P4S 배터리 모듈(단위 모듈)',
+                            '셀 스페이서(Cell Spacer)',
+                            '마운팅 브래킷(Mounting Bracket)',
+                            '양극 버스바(Positive Bus Bar)',
+                            '음극 버스바(Negative Bus Bar)',
+                            '커넥터 단자(Connector Terminal)'
+            )
+        )
+        OR (
+        p.name LIKE '%BPA조립%'
+            AND pt.name = 'BPA 로워 하우징(BPA Lower Housing)'
+        )
+        OR (
+        p.name LIKE '%BPA로딩%'
+            AND pt.name = 'BPA 로워 하우징(BPA Lower Housing)'
+        )
+        OR (
+        p.name LIKE '%LWRCase공급%'
+            AND pt.name = 'LWR 어퍼 커버(LWR Upper Cover)'
+        )
+        OR (
+        p.name LIKE '%갭필러도포%'
+            AND pt.name IN (
+                            '액체형 갭 필러 A(Liquid Gap Filler A)',
+                            '액체형 갭 필러 B(Liquid Gap Filler B)',
+                            '열 전도 패드(Thermal Pad)'
+            )
+        )
+        OR (
+        p.name = '전장품조립'
+            AND pt.name IN (
+                            'BMS 컨트롤 유닛(Main BMS Unit)',
+                            'BMS 슬레이브 모듈(BMS Slave Module)',
+                            '온도 센서 모듈(Temperature Sensor Module)',
+                            '전류 센서 모듈(Current Sensor Module)',
+                            'HV 메인 와이어 하네스(HV Main Wiring)',
+                            'LV 와이어 하네스(LV Wiring Harness)',
+                            'HV 와이어 클립(HV Wire Clip)',
+                            'LV 와이어 클립(LV Wire Clip)',
+                            'HV 절연 커버(HV Insulation Cover)',
+                            'LV 절연 커버(LV Insulation Cover)',
+                            'HV 퓨즈(HV Fuse)',
+                            'HV 릴레이(HV Relay)',
+                            'DC/DC 컨버터(DC/DC Converter)',
+                            '압력 센서(Pressure Sensor)',
+                            '습도 센서(Humidity Sensor)',
+                            'CAN 통신 모듈',
+                            'BLE 모듈'
+            )
+        )
+        OR (
+        p.name = 'W/H-버스바조립'
+            AND pt.name IN (
+                            '양극 버스바(Positive Bus Bar)',
+                            '음극 버스바(Negative Bus Bar)',
+                            'HV 메인 와이어 하네스(HV Main Wiring)',
+                            'LV 와이어 하네스(LV Wiring Harness)'
+            )
+        )
+        OR (
+        p.name = '고전압커넥터'
+            AND pt.name IN (
+                            '커넥터 단자(Connector Terminal)',
+                            'HV 절연 커버(HV Insulation Cover)'
+            )
+        )
+        OR (
+        p.name = 'U/Case조립'
+            AND pt.name IN (
+                            '어퍼 케이스(Upper Case)',
+                            '쿨링 플레이트(Cooling Plate)',
+                            '냉각 파이프(Cooling Pipe)',
+                            '냉각 매니폴드(Cooling Manifold)',
+                            '펌프(Cooling Pump)'
+            )
+        )
+    )
+;
+
 
 -- process 테이블 삽입
 INSERT INTO process (process_id, name)
