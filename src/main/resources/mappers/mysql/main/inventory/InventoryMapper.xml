@@ -5,12 +5,12 @@
     <select id="selectInventoryItems" parameterType="InventorySearchDTO" resultType="InventoryDTO">
         SELECT DISTINCT
         p.name,
-        p.part_id AS product_code,
-        pl.production_line_id AS production_line,
-        pr.process_id AS process_code,
-        DATE_FORMAT(p.last_warehousing_date, '%y-%m-%d') AS last_update,
-        p.current_quantity,
-        p.minimum_required_quantity AS minimum_quantity
+        p.part_id as productCode,
+        pl.production_line_id as productionLine,
+        pr.process_id as processCode,
+        DATE_FORMAT(pp.last_warehousing_date, '%y-%m-%d') as lastUpdate,
+        pp.current_quantity as currentQuantity,
+        pp.minimum_required_quantity as minimumQuantity
         FROM ${bsa.db.schema}.part p
         LEFT JOIN ${bsa.db.schema}.process_part pp ON p.part_id = pp.part_id
         LEFT JOIN ${bsa.db.schema}.process pr ON pp.process_id = pr.process_id

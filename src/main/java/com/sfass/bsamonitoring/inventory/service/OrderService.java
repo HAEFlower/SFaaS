@@ -18,28 +18,39 @@ public class OrderService {
 
     @Transactional
     public OrderResponseDTO createOrder(OrderRequestDTO request) {
-        // 주문 ID 생성 (ORD-YYYYMMDD-###)
-        String orderId = generateOrderId();
+        // Get and insert next sequence
+        int sequence = orderMapper.getNextOrderSequence();
+        orderMapper.insertOrderSequence(sequence);
 
-        // 재고 수량 업데이트
-        orderMapper.updateInventoryQuantity(request.getProductCode(), request.getQuantity());
+        // Generate order ID (ORD-YYYYMMDD-###)
+        String orderId = String.format("ORD-%s-%03d",
+                LocalDateTime.now().format(DateTimeFormatter.BASIC_ISO_DATE),
+                sequence);
 
-        // 업데이트된 수량 조회
-        Integer updatedQuantity = orderMapper.getCurrentQuantity(request.getProductCode());
+        // Update inventory
+        orderMapper.updateInventoryQuantity(
+                request.getProductCode(),
+                request.getQuantity(),
+                request.getProductId(),
+                request.getProcessId()
+        );
 
+        // Get updated quantity
+        Integer updatedQuantity = orderMapper.getCurrentQuantity(
+                request.getProductCode(),
+                request.getProductId(),
+                request.getProcessId()
+        );
+
+        // Build response
         return OrderResponseDTO.builder()
                 .orderId(orderId)
+                .productId(request.getProductId())
+                .processId(request.getProcessId())
                 .productCode(request.getProductCode())
                 .quantity(request.getQuantity())
                 .orderTime(LocalDateTime.now())
                 .updatedQuantity(updatedQuantity)
                 .build();
-    }
-
-    private String generateOrderId() {
-        String dateStr = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd"));
-        int sequence = orderMapper.getNextOrderSequence();
-        orderMapper.insertOrderSequence(sequence);
-        return String.format("ORD-%s-%03d", dateStr, sequence);
     }
 }

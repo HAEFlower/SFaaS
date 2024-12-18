@@ -6,12 +6,6 @@ CREATE TABLE IF NOT EXISTS `part` (
     `big_category` VARCHAR(50) NOT NULL COMMENT '대분류',
     `small_category` VARCHAR(50) NOT NULL COMMENT '소분류',
     `description` TEXT COMMENT '비고',
-    `last_warehousing_date` DATETIME NULL COMMENT '최근 입고일',
-    `current_quantity` BIGINT NOT NULL DEFAULT 0 COMMENT '현재 수량',
-    `minimum_quantity_2p144s` BIGINT NOT NULL DEFAULT 0 COMMENT '2P144S 최소 필요수량',
-    `minimum_quantity_2p180s` BIGINT NOT NULL DEFAULT 0 COMMENT '2P180S 최소 필요수량',
-    `minimum_quantity_2p192s` BIGINT NOT NULL DEFAULT 0 COMMENT '2P192S 최소 필요수량',
-    `minimum_quantity_3p144s` BIGINT NOT NULL DEFAULT 0 COMMENT '3P144S 최소 필요수량',
     `part_type` VARCHAR(20) NOT NULL COMMENT '소모성 구분',
     PRIMARY KEY (`part_id`)
     );
@@ -55,3 +49,15 @@ CREATE TABLE IF NOT EXISTS `order_sequence` (
                                                 PRIMARY KEY (`sequence_id`),
     INDEX `idx_order_date` (`order_date`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `process_part` (
+                                `process_part_id` BIGINT NOT NULL AUTO_INCREMENT,
+                                `process_id` BIGINT NOT NULL,
+                                `part_id` BIGINT NOT NULL,
+                                `last_warehousing_date` DATETIME NOT NULL,
+                                `current_quantity` INT NOT NULL,
+                                `minimum_required_quantity` INT NOT NULL,
+                                PRIMARY KEY (`process_part_id`),
+                                CONSTRAINT `fk_process_part_process` FOREIGN KEY (`process_id`) REFERENCES `process` (`process_id`),
+                                CONSTRAINT `fk_process_part_part` FOREIGN KEY (`part_id`) REFERENCES `part` (`part_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
