@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.sfass.bsamonitoring.global.Util.MathUtil;
@@ -13,27 +14,27 @@ import com.sfass.bsamonitoring.production.productionLine.exception.ProductionLin
 import com.sfass.bsamonitoring.production.productionLine.mapper.ProductionLineMapper;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentDailyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentMonthlyProductionLineStats;
-import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessDetail;
-import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
-import com.sfass.bsamonitoring.production.productionLine.model.DailyProcessStats;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.CurrentProductionLineProcessDetail;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.CurrentProductionLineProcessResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.DailyProcessStats;
 import com.sfass.bsamonitoring.production.productionLine.model.DailyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
-import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStats;
-import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStatsResponse;
-import com.sfass.bsamonitoring.production.productionLine.model.HourlyProductionLineProcessDetail;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.HourlyProcessStats;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.HourlyProcessStatsResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.HourlyProductionLineProcessDetail;
 import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
-import com.sfass.bsamonitoring.production.productionLine.model.ProcessLog;
-import com.sfass.bsamonitoring.production.productionLine.model.ProcessLogResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.ProcessLog;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.ProcessLogResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductionLineServiceImpl implements ProductionLineService {
@@ -78,10 +79,16 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 			throw new ProductionLineNotFoundException();
 		}
 
+		Map<String, Object> map = new HashMap<>();
+		map.put("newTarget", newTarget);
+
 		result.setMonthlyTarget(newTarget);
 		productionLineMapper.updateMonthlyTarget(result);
 		DateStatPk dateStatPk = new DateStatPk(id, year, month, 0);
 		MonthlyProductionLineStats stats = productionLineMapper.getMonthlyStats(dateStatPk);
+		map.put("dateStatPk", dateStatPk);
+		productionLineMapper.updateMonthlyStatsTarget(map);
+
 		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
 
@@ -91,7 +98,7 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		Integer year = curr.getYear();
 		Integer month = curr.getMonthValue();
 		Integer day = curr.getDayOfMonth();
-		day = 14;
+//		day = 14;
 
 		ProductionLine result = productionLineMapper.getProductionLineById(id);
 
@@ -99,10 +106,15 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 			throw new ProductionLineNotFoundException();
 		}
 
+		Map<String, Object> map = new HashMap<>();
+		map.put("newTarget", newTarget);
+
 		result.setDailyTarget(newTarget);
 		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
+		map.put("dateStatPk", dateStatPk);
 		DailyProductionLineStats stats = productionLineMapper.getDailyStats(dateStatPk);
 		productionLineMapper.updateDailyTarget(result);
+		productionLineMapper.updateDailyStatsTarget(map);
 
 		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
@@ -119,6 +131,8 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 
 		CurrentMonthlyProductionLineStats result =
 			CurrentMonthlyProductionLineStats.from(stats);
+
+		log.error(result.toString());
 
 		return result;
 	}

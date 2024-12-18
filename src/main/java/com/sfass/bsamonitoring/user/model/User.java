@@ -1,7 +1,8 @@
 package com.sfass.bsamonitoring.user.model;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+
+import com.sfass.bsamonitoring.user.userEnum.UserAuth;
 
 import lombok.Data;
 
@@ -33,7 +34,7 @@ public class User {
 	private String empNo;
 	private String productionLine;
 	private String processLine;
-	private String auth;
+	private UserAuth auth;
 
 	public boolean getLoginStatus() {
 		return this.loginStatus;

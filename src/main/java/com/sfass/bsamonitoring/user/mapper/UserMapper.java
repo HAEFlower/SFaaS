@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 import com.sfass.bsamonitoring.user.model.User;
 import com.sfass.bsamonitoring.user.model.UserLoginDto;
+import com.sfass.bsamonitoring.user.model.request.UserUpdate;
 
 @Mapper
 public interface UserMapper {
@@ -19,4 +20,8 @@ public interface UserMapper {
 	User getUser(UserLoginDto userLoginDto);
 
 	void updateLogin(UserLoginDto userLoginDto);
+
+	User getUserByEmpNo(String userEmpNo);
+
+	void updateAuth(UserUpdate update);
 }

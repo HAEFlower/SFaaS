@@ -13,7 +13,7 @@ public class OrderRequestDTO {
     private Long processId;
 
     @NotNull(message = "부품 ID는 필수입니다")
-    private Long partId;
+    private Long productCode;
 
     @Min(value = 1, message = "발주 수량은 0보다 커야 합니다")
     private Integer quantity;

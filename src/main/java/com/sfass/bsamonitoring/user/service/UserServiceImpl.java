@@ -6,10 +6,13 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.sfass.bsamonitoring.global.common.userConstants.UserConstants;
 import com.sfass.bsamonitoring.user.mapper.UserMapper;
 import com.sfass.bsamonitoring.user.model.User;
 import com.sfass.bsamonitoring.user.model.UserLoginDto;
 import com.sfass.bsamonitoring.user.model.UserRegisterDto;
+import com.sfass.bsamonitoring.user.model.request.UserUpdate;
+import com.sfass.bsamonitoring.user.model.response.UserUpdateResponse;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -55,7 +58,7 @@ public class UserServiceImpl implements UserService {
 		user.setLastLoginTime(LocalDateTime.now());
 		user.setLoginStatus(false);
 		user.setEmpNo(generateEmpNo());
-		user.setAuth("User");
+		user.setAuth(userRegisterDto.getAuth());
 
 		userMapper.insertUser(user);
 		UserLoginDto userLoginDto = new UserLoginDto();
@@ -64,6 +67,20 @@ public class UserServiceImpl implements UserService {
 		User result = userMapper.getUser(userLoginDto);
 
 		return result;
+	}
+
+	@Override
+	public UserUpdateResponse updateUserPosition(UserUpdate update) {
+
+		User requester = userMapper.getUserByEmpNo(update.getRequestEmpNo());
+		User targetUser = userMapper.getUserByEmpNo(update.getTargetEmpNo());
+
+		if (!requester.getAuth().isHigherAuthority(targetUser.getAuth())) {
+			return new UserUpdateResponse(UserConstants.USER_AUTH_UPDATE_FAIL);
+		}
+
+		userMapper.updateAuth(update);
+		return new UserUpdateResponse(UserConstants.USER_AUTH_UPDATE_SUCCESS);
 	}
 
 	private String generateEmpNo() {

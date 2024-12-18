@@ -25,6 +25,7 @@ public class InventoryController {
         log.info("Searching inventory with criteria: {}", searchDTO);
         List<InventoryDTO> items = inventoryService.getInventoryItems(searchDTO);
         Long totalItems = inventoryService.countInventoryItems(searchDTO);
+        log.error(searchDTO.toString());
 
         return ResponseEntity.ok(GlobalResponse.ok(new InventoryListResponse(items, totalItems)));
     }

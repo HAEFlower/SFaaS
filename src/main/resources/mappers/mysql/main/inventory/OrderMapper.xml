@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sfass.bsamonitoring.inventory.mapper.OrderMapper">
-    <update id="updateInventoryQuantity" >
-        UPDATE process_part
+    <update id="updateInventoryQuantity">
+        UPDATE ${bsa.db.schema}.process_part
         SET current_quantity = current_quantity + #{quantity},
             last_warehousing_date = NOW()
         WHERE product_id = #{productId}
           AND process_id = #{processId}
-          AND part_id = #{partId}
+          AND part_id = #{productCode}
     </update>
 
     <select id="getCurrentQuantity" resultType="Integer">
         SELECT current_quantity
-        FROM process_part
+        FROM ${bsa.db.schema}.process_part
         WHERE product_id = #{productId}
           AND process_id = #{processId}
-          AND part_id = #{partId}
+          AND part_id = #{productCode}
     </select>
 
     <select id="checkProcessLineExists" resultType="boolean">
         SELECT EXISTS (
             SELECT 1
-            FROM production_line_process
+            FROM ${bsa.db.schema}.production_line_process
             WHERE production_line_id = #{productId}
               AND process_id = #{processId}
         )
@@ -30,14 +30,14 @@
     <select id="getNextOrderSequence" resultType="int">
         SELECT COALESCE(
                        (SELECT MAX(sequence)
-                        FROM order_sequence
+                        FROM ${bsa.db.schema}.order_sequence
                         WHERE DATE(order_date) = CURDATE()),
             0
         ) + 1 AS next_sequence
     </select>
 
     <insert id="insertOrderSequence">
-        INSERT INTO order_sequence (sequence, order_date)
+        INSERT INTO ${bsa.db.schema}.order_sequence (sequence, order_date)
         VALUES (#{sequence}, CURDATE())
     </insert>
 </mapper>

@@ -39,7 +39,7 @@ public class OrderService {
         orderMapper.updateInventoryQuantity(
                 request.getProductId(),
                 request.getProcessId(),
-                request.getPartId(),
+                request.getProductCode(),
                 request.getQuantity()
         );
 
@@ -47,7 +47,7 @@ public class OrderService {
         Integer updatedQuantity = orderMapper.getCurrentQuantity(
                 request.getProductId(),
                 request.getProcessId(),
-                request.getPartId()
+                request.getProductCode()
         );
 
         // Build response
@@ -55,7 +55,7 @@ public class OrderService {
                 .orderId(orderId)
                 .productId(request.getProductId().toString())    // Long -> String 변환
                 .processId(request.getProcessId().toString())    // Long -> String 변환
-                .productCode(request.getPartId().toString())     // partId를 productCode로 변환
+                .productCode(request.getProductCode().toString())     // partId를 productCode로 변환
                 .quantity(request.getQuantity())
                 .orderTime(LocalDateTime.now())                  // ISO8601 포맷은 @JsonFormat에서 처리
                 .updatedQuantity(updatedQuantity)
