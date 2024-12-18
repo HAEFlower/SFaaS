@@ -50,4 +50,8 @@ public interface ProductionLineMapper {
 	ProductionLineProcessWithName getProductionLineProcessWithNameOneByMap(Map<String, Object> processMap);
 
 	List<ProcessLog> getProcessLog(Map<String, Long> map);
+
+	void updateDailyStatsTarget(Map<String, Object> map);
+
+	void updateMonthlyStatsTarget(Map<String, Object> map);
 }

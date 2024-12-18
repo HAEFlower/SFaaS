@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import com.sfass.bsamonitoring.global.Util.MathUtil;
@@ -34,6 +35,7 @@ import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionL
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ProductionLineServiceImpl implements ProductionLineService {
@@ -78,10 +80,16 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 			throw new ProductionLineNotFoundException();
 		}
 
+		Map<String, Object> map = new HashMap<>();
+		map.put("newTarget", newTarget);
+
 		result.setMonthlyTarget(newTarget);
 		productionLineMapper.updateMonthlyTarget(result);
 		DateStatPk dateStatPk = new DateStatPk(id, year, month, 0);
 		MonthlyProductionLineStats stats = productionLineMapper.getMonthlyStats(dateStatPk);
+		map.put("dateStatPk", dateStatPk);
+		productionLineMapper.updateMonthlyStatsTarget(map);
+
 		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
 
@@ -91,7 +99,7 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		Integer year = curr.getYear();
 		Integer month = curr.getMonthValue();
 		Integer day = curr.getDayOfMonth();
-		day = 14;
+//		day = 14;
 
 		ProductionLine result = productionLineMapper.getProductionLineById(id);
 
@@ -99,10 +107,15 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 			throw new ProductionLineNotFoundException();
 		}
 
+		Map<String, Object> map = new HashMap<>();
+		map.put("newTarget", newTarget);
+
 		result.setDailyTarget(newTarget);
 		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
+		map.put("dateStatPk", dateStatPk);
 		DailyProductionLineStats stats = productionLineMapper.getDailyStats(dateStatPk);
 		productionLineMapper.updateDailyTarget(result);
+		productionLineMapper.updateDailyStatsTarget(map);
 
 		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
@@ -119,6 +132,8 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 
 		CurrentMonthlyProductionLineStats result =
 			CurrentMonthlyProductionLineStats.from(stats);
+
+		log.error(result.toString());
 
 		return result;
 	}

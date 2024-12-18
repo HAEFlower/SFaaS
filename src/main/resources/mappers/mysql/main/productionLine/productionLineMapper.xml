@@ -25,6 +25,22 @@
         WHERE production_line_id = #{productionLineId}
     </update>
 
+    <update id="updateDailyStatsTarget" parameterType="Map">
+        UPDATE ${bsa.db.schema}.daily_production_line_stats
+        SET daily_target = #{newTarget}
+        WHERE
+            production_line_id = #{dateStatPk.id}
+        AND year = #{dateStatPk.year} AND month = #{dateStatPk.month} AND day = #{dateStatPk.day}
+    </update>
+
+    <update id="updateMonthlyStatsTarget" parameterType="Map">
+        UPDATE ${bsa.db.schema}.monthly_production_line_stats
+        SET monthly_production_target = #{newTarget}
+        WHERE
+            production_line_id = #{dateStatPk.id}
+                AND year = #{dateStatPk.year} AND month = #{dateStatPk.month}
+    </update>
+
     <select id="getMonthlyStats" resultType="MonthlyProductionLineStats" parameterType="DateStatPk">
         SELECT *
         FROM ${bsa.db.schema}.monthly_production_line_stats
