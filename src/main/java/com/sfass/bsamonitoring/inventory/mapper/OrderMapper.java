@@ -5,14 +5,17 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface OrderMapper {
-    void updateInventoryQuantity(@Param("productCode") String productCode,
-                                 @Param("quantity") Integer quantity,
-                                 @Param("productId") String productId,
-                                 @Param("processId") String processId);
+    void updateInventoryQuantity(@Param("productId") Long productId,
+                                 @Param("processId") Long processId,
+                                 @Param("partId") Long partId,
+                                 @Param("quantity") Integer quantity);
 
-    Integer getCurrentQuantity(@Param("productCode") String productCode,
-                               @Param("productId") String productId,
-                               @Param("processId") String processId);
+    Integer getCurrentQuantity(@Param("productId") Long productId,
+                               @Param("processId") Long processId,
+                               @Param("partId") Long partId);
+
+    boolean checkProcessLineExists(@Param("productId") Long productId,
+                                   @Param("processId") Long processId);
 
     int getNextOrderSequence();
 
