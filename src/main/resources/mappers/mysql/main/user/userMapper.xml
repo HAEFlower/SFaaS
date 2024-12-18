@@ -24,10 +24,10 @@
             AND user_name LIKE CONCAT('%', #{userName}, '%')
         </if>
         <if test="productionLine != '' and productionLine != null">
-            AND production_line = #{productionLine}
+            AND production_line = (SELECT product FROM ${bsa.db.schema}.production_line WHERE production_line_id = #{productionLine})
         </if>
         <if test="processLine != '' and processLine != null">
-            AND process_line = #{processLine}
+            AND process_line = (SELECT name FROM ${bsa.db.schema}.process WHERE process_id = #{processLine})
         </if>
     </select>
 
