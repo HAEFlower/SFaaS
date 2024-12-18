@@ -53,11 +53,11 @@ public class OrderService {
         // Build response
         return OrderResponseDTO.builder()
                 .orderId(orderId)
-                .productId(request.getProductId())
-                .processId(request.getProcessId())
-                .partId(request.getPartId())
+                .productId(request.getProductId().toString())    // Long -> String 변환
+                .processId(request.getProcessId().toString())    // Long -> String 변환
+                .productCode(request.getPartId().toString())     // partId를 productCode로 변환
                 .quantity(request.getQuantity())
-                .orderTime(LocalDateTime.now())
+                .orderTime(LocalDateTime.now())                  // ISO8601 포맷은 @JsonFormat에서 처리
                 .updatedQuantity(updatedQuantity)
                 .build();
     }
