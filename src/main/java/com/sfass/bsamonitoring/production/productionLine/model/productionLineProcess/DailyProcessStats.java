@@ -1,4 +1,4 @@
-package com.sfass.bsamonitoring.production.productionLine.model;
+package com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess;
 
 import lombok.Data;
 

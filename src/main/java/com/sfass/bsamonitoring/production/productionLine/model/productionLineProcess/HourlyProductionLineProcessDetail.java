@@ -1,8 +1,8 @@
-package com.sfass.bsamonitoring.production.productionLine.model;
+package com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess;
 
 import com.sfass.bsamonitoring.global.Util.MathUtil;
 import com.sfass.bsamonitoring.global.common.LevelEnum;
-import com.sfass.bsamonitoring.global.common.StatusEnum;
+import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

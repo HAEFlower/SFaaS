@@ -4,17 +4,15 @@ import java.util.List;
 
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentDailyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentMonthlyProductionLineStats;
-import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessDetail;
-import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.CurrentProductionLineProcessDetail;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.CurrentProductionLineProcessResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
-import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStatsResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.HourlyProcessStatsResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
-import com.sfass.bsamonitoring.production.productionLine.model.ProcessLog;
-import com.sfass.bsamonitoring.production.productionLine.model.ProcessLogResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.ProcessLogResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
-import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
 public interface ProductionLineService {
 	ProductionLine getProductionLineById(Long id);

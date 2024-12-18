@@ -5,12 +5,12 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 
-import com.sfass.bsamonitoring.production.productionLine.model.DailyProcessStats;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.DailyProcessStats;
 import com.sfass.bsamonitoring.production.productionLine.model.DailyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
-import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStats;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.HourlyProcessStats;
 import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProductionLineStats;
-import com.sfass.bsamonitoring.production.productionLine.model.ProcessLog;
+import com.sfass.bsamonitoring.production.productionLine.model.productionLineProcess.ProcessLog;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
 import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
