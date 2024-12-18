@@ -11,6 +11,7 @@
         DATE_FORMAT(pp.last_warehousing_date, '%y-%m-%d') as lastUpdate,
         pp.current_quantity as currentQuantity,
         pp.minimum_required_quantity as minimumQuantity
+
         FROM ${bsa.db.schema}.part p
         LEFT JOIN ${bsa.db.schema}.process_part pp ON p.part_id = pp.part_id
         LEFT JOIN ${bsa.db.schema}.process pr ON pp.process_id = pr.process_id
@@ -18,10 +19,7 @@
         LEFT JOIN ${bsa.db.schema}.production_line pl ON plp.production_line_id = pl.production_line_id
         <where>
             <if test="search != null and search != ''">
-                AND (
-                p.name LIKE CONCAT('%', #{search}, '%')
-                OR p.description LIKE CONCAT('%', #{search}, '%')
-                )
+                AND p.name LIKE CONCAT('%', #{search}, '%')
             </if>
             <if test="processId != null and processId != ''">
                 AND pr.process_id = #{processId}

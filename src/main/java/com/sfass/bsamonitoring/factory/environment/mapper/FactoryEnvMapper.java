@@ -9,4 +9,6 @@ public interface FactoryEnvMapper {
 	FactoryStats getCurrentEnv();
 
 	void updateTargetTemperature(Double newTarget);
+
+	void updateTargetAirCondition(Double aDouble);
 }

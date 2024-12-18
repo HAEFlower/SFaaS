@@ -10,8 +10,10 @@ import com.sfass.bsamonitoring.production.productionLine.model.DailyProductionLi
 import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
 import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStats;
 import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProductionLineStats;
+import com.sfass.bsamonitoring.production.productionLine.model.ProcessLog;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
 @Mapper
 public interface ProductionLineMapper {
@@ -41,5 +43,11 @@ public interface ProductionLineMapper {
 
 	ProductionLineProcessWithName getProductionLineProcessWithNameOne(Long id);
 
-	List<HourlyProcessStats> getHourlyProcessStats(DateStatPk dailyPk);
+	List<HourlyProcessStats> getHourlyProcessStats(Map<String, Object> map);
+
+	List<ProductionLineFault> getProductionLIneFault();
+
+	ProductionLineProcessWithName getProductionLineProcessWithNameOneByMap(Map<String, Object> processMap);
+
+	List<ProcessLog> getProcessLog(Map<String, Long> map);
 }
