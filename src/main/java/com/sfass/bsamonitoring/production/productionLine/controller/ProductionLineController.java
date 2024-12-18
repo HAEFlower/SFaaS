@@ -14,13 +14,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentDailyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentMonthlyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessDetail;
+import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.DateStatPk;
-import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStats;
 import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStatsResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
+import com.sfass.bsamonitoring.production.productionLine.model.ProcessLogResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
-import com.sfass.bsamonitoring.production.productionLine.model.CurrentProductionLineProcessResponse;
-import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcess;
+import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
 import com.sfass.bsamonitoring.production.productionLine.service.ProductionLineService;
 
 import lombok.RequiredArgsConstructor;
@@ -43,12 +44,12 @@ public class ProductionLineController {
 	}
 
 	@PostMapping("/monthly/{id}")
-	public ProductionLine updateMontlyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
+	public ProductionLineUpdateResponse updateMonthlyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
 		return productionLineService.updateProductionMonthlyTarget(id, newTarget.newTarget());
 	}
 
 	@PostMapping("/daily/{id}")
-	public ProductionLine updateDailyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
+	public ProductionLineUpdateResponse updateDailyTarget(@PathVariable Long id, @RequestBody NewTarget newTarget) {
 		return productionLineService.updateProductionDailyTarget(id, newTarget.newTarget());
 	}
 
@@ -77,12 +78,13 @@ public class ProductionLineController {
 		return productionLineService.getDailyStatsByYearAndMonth(id, year, month);
 	}
 
-	@PostMapping("/process/{productionLineProcessId}")
+	@PostMapping("/{productionLineId}/process/{processId}")
 	public CurrentProductionLineProcessDetail updateProductionLineProcessBaseTime(
-		@PathVariable Long productionLineProcessId,
+		@PathVariable Long productionLineId,
+		@PathVariable Long processId,
 		@RequestBody NewTarget newTarget
 	) {
-		return productionLineService.updateProductinLineProcessBaseTime(productionLineProcessId, newTarget);
+		return productionLineService.updateProductionLineProcessBaseTime(productionLineId, processId, newTarget);
 	}
 
 	@GetMapping("/{id}/process")
@@ -90,18 +92,32 @@ public class ProductionLineController {
 		return productionLineService.getCurrentProcessStats(id);
 	}
 
-	@GetMapping("/process/hourly/{productionLineProcessId}")
+	@GetMapping("{productionLineId}/process/hourly/{processId}")
 	public HourlyProcessStatsResponse getHourlyProcessStats(
-		@PathVariable("productionLineProcessId") Long id,
+		@PathVariable("productionLineId") Long productionLineId,
+		@PathVariable("processId") Long processId,
 		@RequestParam(value = "year", required = false) Integer year,
 		@RequestParam(value = "month", required = false) Integer month,
 		@RequestParam(value = "day", required = false) Integer day
 	) {
 		if (year == null || month == null || day == null) {
-			return productionLineService.getTodayHourlyProcessStats(id);
+			return productionLineService.getTodayHourlyProcessStats(productionLineId, processId);
 		}
-		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
-		return productionLineService.getHourlyProcessStats(dateStatPk);
+		DateStatPk dateStatPk = new DateStatPk(0L, year, month, day);
+		return productionLineService.getHourlyProcessStats(dateStatPk, productionLineId, processId);
+	}
+
+	@GetMapping("/fault")
+	public List<HourWithFault> getFaultStats() {
+		return productionLineService.getFaultStats();
+	}
+
+	@GetMapping("{productionId}/process/{processId}/log")
+	public List<ProcessLogResponse> getProcessLog(
+		@PathVariable Long productionId,
+		@PathVariable Long processId
+	) {
+		return productionLineService.getProcessLog(productionId, processId);
 	}
 
 }

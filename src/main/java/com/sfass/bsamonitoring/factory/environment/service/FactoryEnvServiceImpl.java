@@ -24,4 +24,10 @@ public class FactoryEnvServiceImpl implements FactoryEnvService {
 		factoryEnvMapper.updateTargetTemperature(newTarget.newTarget());
 		return FactoryEnvResponse.from(factoryEnvMapper.getCurrentEnv());
 	}
+
+	@Override
+	public FactoryEnvResponse updateTargetAirCondition(DoubleNewTarget newTarget) {
+		factoryEnvMapper.updateTargetAirCondition(newTarget.newTarget());
+		return FactoryEnvResponse.from(factoryEnvMapper.getCurrentEnv());
+	}
 }

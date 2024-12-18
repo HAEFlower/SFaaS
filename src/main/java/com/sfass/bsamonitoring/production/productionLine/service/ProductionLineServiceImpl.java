@@ -1,12 +1,14 @@
 package com.sfass.bsamonitoring.production.productionLine.service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
+import com.sfass.bsamonitoring.global.Util.MathUtil;
 import com.sfass.bsamonitoring.production.productionLine.exception.ProductionLineNotFoundException;
 import com.sfass.bsamonitoring.production.productionLine.mapper.ProductionLineMapper;
 import com.sfass.bsamonitoring.production.productionLine.model.CurrentDailyProductionLineStats;
@@ -21,8 +23,13 @@ import com.sfass.bsamonitoring.production.productionLine.model.HourlyProcessStat
 import com.sfass.bsamonitoring.production.productionLine.model.HourlyProductionLineProcessDetail;
 import com.sfass.bsamonitoring.production.productionLine.model.MonthlyProductionLineStats;
 import com.sfass.bsamonitoring.production.productionLine.model.NewTarget;
+import com.sfass.bsamonitoring.production.productionLine.model.ProcessLog;
+import com.sfass.bsamonitoring.production.productionLine.model.ProcessLogResponse;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLine;
 import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineProcessWithName;
+import com.sfass.bsamonitoring.production.productionLine.model.ProductionLineUpdateResponse;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.HourWithFault;
+import com.sfass.bsamonitoring.production.productionLine.model.fault.ProductionLineFault;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import lombok.RequiredArgsConstructor;
@@ -57,9 +64,14 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		return result;
 	}
 
-	// TODO: 현재 수량도 같이 전송하는 고도화 고려
+
 	@Override
-	public ProductionLine updateProductionMonthlyTarget(Long id, Long newTarget) {
+	public ProductionLineUpdateResponse updateProductionMonthlyTarget(Long id, Long newTarget) {
+		LocalDateTime curr = LocalDateTime.now();
+		Integer year = curr.getYear();
+		Integer month = curr.getMonthValue();
+
+
 		ProductionLine result = productionLineMapper.getProductionLineById(id);
 
 		if (result == null) {
@@ -68,12 +80,19 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 
 		result.setMonthlyTarget(newTarget);
 		productionLineMapper.updateMonthlyTarget(result);
-		return result;
+		DateStatPk dateStatPk = new DateStatPk(id, year, month, 0);
+		MonthlyProductionLineStats stats = productionLineMapper.getMonthlyStats(dateStatPk);
+		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
 
-	// TODO: 현재 수량도 같이 전송하는 고도화 고려
 	@Override
-	public ProductionLine updateProductionDailyTarget(Long id, Long newTarget) {
+	public ProductionLineUpdateResponse updateProductionDailyTarget(Long id, Long newTarget) {
+		LocalDateTime curr = LocalDateTime.now();
+		Integer year = curr.getYear();
+		Integer month = curr.getMonthValue();
+		Integer day = curr.getDayOfMonth();
+		day = 14;
+
 		ProductionLine result = productionLineMapper.getProductionLineById(id);
 
 		if (result == null) {
@@ -81,8 +100,11 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		}
 
 		result.setDailyTarget(newTarget);
+		DateStatPk dateStatPk = new DateStatPk(id, year, month, day);
+		DailyProductionLineStats stats = productionLineMapper.getDailyStats(dateStatPk);
 		productionLineMapper.updateDailyTarget(result);
-		return result;
+
+		return ProductionLineUpdateResponse.from(result, stats.getAccureProductionCnt());
 	}
 
 	@Override
@@ -173,7 +195,9 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 	}
 
 	@Override
-	public CurrentProductionLineProcessDetail updateProductinLineProcessBaseTime(Long id,
+	public CurrentProductionLineProcessDetail updateProductionLineProcessBaseTime(
+		Long productionLineId,
+		Long processId,
 		NewTarget newTarget) {
 
 		Long newValue = newTarget.newTarget();
@@ -182,24 +206,26 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		Integer month = curr.getMonthValue();
 		Integer day = curr.getDayOfMonth();
 
-		DateStatPk dailyPk = new DateStatPk(id, year, month, day);
+		DateStatPk dailyPk = new DateStatPk(productionLineId, year, month, day);
 
 		Map<String, Object> statMap = new HashMap<>();
 		statMap.put("dailyPk", dailyPk);
-		statMap.put("id", id);
+		statMap.put("productionLineId", productionLineId);
+		statMap.put("processId", processId);
 
 		Map<String, Object> processMap = new HashMap<>();
-		processMap.put("id", id);
+		processMap.put("productionLineId", productionLineId);
+		processMap.put("processId", processId);
 		processMap.put("newValue", newValue);
 
 		DailyProcessStats stats = productionLineMapper.getDailyProcessStatsById(statMap);
 		productionLineMapper.updateProductionLineProcessBaseTime(processMap);
-		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOne(id);
+		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOneByMap(processMap);
 		return CurrentProductionLineProcessDetail.from(stats, process);
 	}
 
 	@Override
-	public HourlyProcessStatsResponse getTodayHourlyProcessStats(Long id) {
+	public HourlyProcessStatsResponse getTodayHourlyProcessStats(Long productionLineId, Long processId) {
 		LocalDateTime curr = LocalDateTime.now();
 		Integer year = curr.getYear();
 		Integer month = curr.getMonthValue();
@@ -207,10 +233,14 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 		// Integer day = curr.getDayOfMonth();
 		Integer day = 14;
 
-		DateStatPk dailyPk = new DateStatPk(id, year, month, day);
+		DateStatPk dailyPk = new DateStatPk(0L, year, month, day);
+		Map<String, Object> map = new HashMap<>();
+		map.put("dailyPk", dailyPk);
+		map.put("productionLineId", productionLineId);
+		map.put("processId", processId);
 
-		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(dailyPk);
-		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOne(id);
+		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(map);
+		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOneByMap(map);
 
 		List<HourlyProductionLineProcessDetail> details =
 			hourlyProcessStatsList.stream()
@@ -220,21 +250,70 @@ public class ProductionLineServiceImpl implements ProductionLineService {
 	}
 
 	@Override
-	public HourlyProcessStatsResponse getHourlyProcessStats(DateStatPk dateStatPk) {
+	public HourlyProcessStatsResponse getHourlyProcessStats(
+		DateStatPk dateStatPk,
+		Long productionLineId,
+		Long processId
+		) {
 		Integer year = dateStatPk.year();
 		Integer month = dateStatPk.month();
 		Integer day = dateStatPk.day();
 
 		DateStatPk dailyPk = new DateStatPk(dateStatPk.id(), year, month, day);
+		Map<String, Object> map = new HashMap<>();
+		map.put("dailyPk", dailyPk);
+		map.put("productionLineId", productionLineId);
+		map.put("processId", processId);
 
-		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(dailyPk);
-		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOne(dateStatPk.id());
+		List<HourlyProcessStats> hourlyProcessStatsList = productionLineMapper.getHourlyProcessStats(map);
+		ProductionLineProcessWithName process = productionLineMapper.getProductionLineProcessWithNameOneByMap(map);
 
 		List<HourlyProductionLineProcessDetail> details =
 			hourlyProcessStatsList.stream()
 				.map((HourlyProcessStats stats) -> HourlyProductionLineProcessDetail.from(stats, process))
 				.toList();
 		return HourlyProcessStatsResponse.from(process, details);
+	}
+
+	@Override
+	public List<HourWithFault> getFaultStats() {
+		List<ProductionLineFault> list = productionLineMapper.getProductionLIneFault();
+
+		list.forEach(data -> {
+			double faultRate = ((double) data.getFaultCnt() / data.getTotalCnt()) * 100;
+			data.setFaultRate(MathUtil.roundToTwoDecimalPlaces(faultRate));
+		});
+
+		Map<Integer, HourWithFault> map = new HashMap<>();
+		for (int i = 0; i < 24; ++i) {
+			map.put(i, new HourWithFault(i));
+		}
+
+		List<HourWithFault> result = new ArrayList<>();
+
+		list.forEach(data -> {
+			map.get(data.getHour()).addData(data);
+		});
+
+		for (int i = 0; i < 24; i++) {
+			result.add(map.get(i));
+		}
+
+		return result;
+	}
+
+	@Override
+	public List<ProcessLogResponse> getProcessLog(Long productionId, Long processId) {
+		Map<String, Long> map = new HashMap<>();
+		map.put("productionLineId", productionId);
+		map.put("processId", processId);
+		List<ProcessLog> list = productionLineMapper.getProcessLog(map);
+
+		List<ProcessLogResponse> result =
+			list.stream()
+				.map(ProcessLogResponse::from)
+				.toList();
+		return result;
 	}
 
 }
