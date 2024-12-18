@@ -16,6 +16,7 @@ public enum ErrorCode {
 
 	// User
 	USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
+	USER_ALREADY_EXITS(HttpStatus.BAD_REQUEST, "이미 존재하는 아이디입니다."),
 
 	// Auth
 	PERMISSION_DENIED(HttpStatus.FORBIDDEN, "권한이 거부되었습니다."),

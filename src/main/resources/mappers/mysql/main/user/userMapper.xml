@@ -10,6 +10,12 @@
             AND user_pwd = #{userPwd}
     </select>
 
+    <select id="getUserById" parameterType="String">
+        SELECT user_id
+        FROM ${bsa.db.schema}.user
+        WHERE user_id = #{userId}
+    </select>
+
     <select id="getUsers" resultType="User" parameterType="Map">
         SELECT *
         FROM ${bsa.db.schema}.user
@@ -18,10 +24,10 @@
             AND user_name LIKE CONCAT('%', #{userName}, '%')
         </if>
         <if test="productionLine != '' and productionLine != null">
-            AND production_line LIKE CONCAT('%', #{productionLine}, '%')
+            AND production_line = #{productionLine}
         </if>
         <if test="processLine != '' and processLine != null">
-            AND process_line LIKE CONCAT('%', #{processLine}, '%')
+            AND process_line = #{processLine}
         </if>
     </select>
 

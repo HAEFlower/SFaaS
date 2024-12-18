@@ -38,10 +38,10 @@ public class UserController {
 	@GetMapping()
 	public List<User> getUsers(
 		@RequestParam(required = false) String userName,
-		@RequestParam(required = false) String productionLine,
-		@RequestParam(required = false) String processLine
+		@RequestParam(required = false) Long productionLine,
+		@RequestParam(required = false) Long processLine
 	) {
-		Map<String, String> map = new HashMap<>();
+		Map<String, Object> map = new HashMap<>();
 		map.put("userName", userName);
 		map.put("productionLine", productionLine);
 		map.put("processLine", processLine);

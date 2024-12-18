@@ -11,7 +11,8 @@ import com.sfass.bsamonitoring.user.model.response.UserUpdateResponse;
 
 public interface UserService {
 	User loginUser(UserLoginDto userLoginDto);
-	List<User> getUsers(Map<String, String> paramMap);
+
+	List<User> getUsers(Map<String, Object> paramMap);
 
 	User registerUser(UserRegisterDto userRegisterDto);
 

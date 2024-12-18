@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.sfass.bsamonitoring.user.exception.UserAlreadyExits;
+import com.sfass.bsamonitoring.user.userEnum.UserAuth;
 import org.springframework.stereotype.Service;
 
 import com.sfass.bsamonitoring.global.common.userConstants.UserConstants;
@@ -37,7 +39,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> getUsers(Map<String, String> paramMap) {
+	public List<User> getUsers(Map<String, Object> paramMap) {
 
 		List<User> result = userMapper.getUsers(paramMap);
 
@@ -52,13 +54,18 @@ public class UserServiceImpl implements UserService {
 		user.setUserName(userRegisterDto.getUserName());
 		user.setEmail(userRegisterDto.getEmail());
 		user.setDepartment(userRegisterDto.getDepartment());
-		user.setPosition(userRegisterDto.getPosition());
+		user.setPosition("none");
 		user.setProductionLine(userRegisterDto.getProductionLine());
 		user.setProcessLine(userRegisterDto.getProcessLine());
 		user.setLastLoginTime(LocalDateTime.now());
 		user.setLoginStatus(false);
 		user.setEmpNo(generateEmpNo());
 		user.setAuth(userRegisterDto.getAuth());
+
+		User temp = userMapper.getUserById(user.getUserId());
+		if (temp != null) {
+			throw new UserAlreadyExits();
+		}
 
 		userMapper.insertUser(user);
 		UserLoginDto userLoginDto = new UserLoginDto();
