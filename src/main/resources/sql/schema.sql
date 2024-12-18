@@ -49,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `order_sequence` (
 CREATE TABLE `process_part` (
                                 `process_part_id` BIGINT NOT NULL AUTO_INCREMENT,
                                 `process_id` BIGINT NOT NULL,
+                                `product_id` BIGINT NOT NULL,
                                 `part_id` BIGINT NOT NULL,
                                 `last_warehousing_date` DATETIME NOT NULL,
                                 `current_quantity` INT NOT NULL,

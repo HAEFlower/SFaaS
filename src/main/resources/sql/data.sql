@@ -52,24 +52,18 @@ SELECT
     NOW() as last_warehousing_date,
     100 as current_quantity,
     CASE
-        -- BMA 모듈류는 더 많은 수량이 필요
-        WHEN pt.small_category IN ('BMA(2P6S) 모듈', 'BMA(3P4S) 모듈') THEN 50
-        -- 배터리 모듈 관련 부품들
-        WHEN pt.big_category = '배터리모듈' THEN 20
-        -- 그 외 부품들
-        ELSE 10
+        WHEN p.name IN ('BMA로딩', 'BMA가체결', 'BMA자동체결') THEN 50
+        WHEN p.name IN ('BPA조립', '전장품조립', 'W/H-버스바조립') THEN 30
+        ELSE 20
         END as minimum_required_quantity
 FROM process p
          CROSS JOIN part pt
-WHERE
-   -- BMA 로딩 공정에 필요한 부품
-    (p.name = 'BMA로딩' AND pt.big_category = '배터리모듈') OR
-   -- BPA 조립 공정에 필요한 부품
-    (p.name = 'BPA조립' AND pt.big_category IN ('외부 케이스', '열 관리')) OR
-   -- 전장품 조립 공정에 필요한 부품
-    (p.name = '전장품조립' AND pt.big_category IN ('전기 배선', '안전 장치', '전원 연결')) OR
-   -- W/H-버스바 조립 공정에 필요한 부품
-    (p.name = 'W/H-버스바조립' AND pt.big_category = '모듈 연결 부품');
+WHERE EXISTS (
+    SELECT 1
+    FROM production_line_process plp
+    WHERE plp.process_id = p.process_id
+);
+
 -- process 테이블 삽입
 INSERT INTO process (process_id, name)
 VALUES

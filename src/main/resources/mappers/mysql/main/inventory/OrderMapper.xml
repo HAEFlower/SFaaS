@@ -3,33 +3,44 @@
 <mapper namespace="com.sfass.bsamonitoring.inventory.mapper.OrderMapper">
 
     <update id="updateInventoryQuantity">
-        UPDATE ${bsa.db.schema}.process_part
-        SET current_quantity = current_quantity + #{quantity},
-            last_warehousing_date = NOW()
-        WHERE part_id = #{partId}
-          AND product_id = #{productId}
-          AND process_id = #{processId}
+        UPDATE process_part pp
+            JOIN production_line_process plp ON pp.process_id = plp.process_id
+            SET pp.current_quantity = pp.current_quantity + #{quantity},
+                pp.last_warehousing_date = NOW()
+        WHERE plp.production_line_id = #{productId}
+          AND pp.process_id = #{processId}
+          AND pp.part_id = #{partId}
     </update>
 
     <select id="getCurrentQuantity" resultType="Integer">
-        SELECT current_quantity
-        FROM ${bsa.db.schema}.process_part
-        WHERE part_id = #{partId}
-          AND product_id = #{productId}
-          AND process_id = #{processId}
+        SELECT pp.current_quantity
+        FROM process_part pp
+                 JOIN production_line_process plp ON pp.process_id = plp.process_id
+        WHERE plp.production_line_id = #{productId}
+          AND pp.process_id = #{processId}
+          AND pp.part_id = #{partId}
+    </select>
+
+    <select id="checkProcessLineExists" resultType="boolean">
+        SELECT EXISTS (
+            SELECT 1
+            FROM production_line_process
+            WHERE production_line_id = #{productId}
+              AND process_id = #{processId}
+        )
     </select>
 
     <select id="getNextOrderSequence" resultType="int">
         SELECT COALESCE(
                        (SELECT MAX(sequence)
-                        FROM ${bsa.db.schema}.order_sequence
+                        FROM order_sequence
                         WHERE DATE(order_date) = CURDATE()),
             0
         ) + 1 AS next_sequence
     </select>
 
     <insert id="insertOrderSequence">
-        INSERT INTO ${bsa.db.schema}.order_sequence
+        INSERT INTO order_sequence
             (sequence, order_date)
         VALUES
             (#{sequence}, CURDATE())
