@@ -44,25 +44,30 @@ VALUES
     (2, 800, 24000, NOW(), NULL, 'STOPPED', '2P180S'),
     (3, 750, 22500, NOW(), NULL, 'STOPPED', '2P192S'),
     (4, 900, 27000, NOW(), NULL, 'STOPPED', '3P144S');
+
 -- process_part 테이블에 데이터 삽입
-INSERT INTO process_part (process_id, part_id, last_warehousing_date, current_quantity, minimum_required_quantity)
+INSERT INTO process_part (
+    process_id,
+    product_id,
+    part_id,
+    last_warehousing_date,
+    current_quantity,
+    minimum_required_quantity
+)
 SELECT
     p.process_id,
+    plp.production_line_id,
     pt.part_id,
-    NOW() as last_warehousing_date,
-    100 as current_quantity,
+    NOW(),
+    100,  -- 초기 재고 수량
     CASE
         WHEN p.name IN ('BMA로딩', 'BMA가체결', 'BMA자동체결') THEN 50
         WHEN p.name IN ('BPA조립', '전장품조립', 'W/H-버스바조립') THEN 30
         ELSE 20
-        END as minimum_required_quantity
+        END
 FROM process p
-         CROSS JOIN part pt
-WHERE EXISTS (
-    SELECT 1
-    FROM production_line_process plp
-    WHERE plp.process_id = p.process_id
-);
+         JOIN production_line_process plp ON p.process_id = plp.process_id
+         CROSS JOIN part pt;
 
 -- process 테이블 삽입
 INSERT INTO process (process_id, name)
