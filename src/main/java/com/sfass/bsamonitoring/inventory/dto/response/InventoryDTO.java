@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class InventoryDTO {
     private String name;                 // 제품명
-    private String productCode;          // 제품코드 (part_id)
+    private Long partId;                 // 부품 ID
     private String productionLine;       // 생산라인
     private String processCode;          // 공정코드
     private String lastUpdate;           // 입고날짜

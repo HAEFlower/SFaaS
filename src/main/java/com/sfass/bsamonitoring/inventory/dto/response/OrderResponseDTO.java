@@ -8,9 +8,9 @@ import java.time.LocalDateTime;
 @Builder
 public class OrderResponseDTO {
     private String orderId;
-    private String productId;
-    private String processId;
-    private String productCode;
+    private Long productId;
+    private Long processId;
+    private Long partId;
     private Integer quantity;
     private LocalDateTime orderTime;
     private Integer updatedQuantity;

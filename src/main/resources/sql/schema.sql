@@ -3,10 +3,6 @@ USE bsa_monitoring;
 CREATE TABLE IF NOT EXISTS `part` (
                                       `part_id` BIGINT NOT NULL AUTO_INCREMENT,
                                       `name` VARCHAR(255) NOT NULL COMMENT '부품 이름',
-    `big_category` VARCHAR(50) NOT NULL COMMENT '대분류',
-    `small_category` VARCHAR(50) NOT NULL COMMENT '소분류',
-    `description` TEXT COMMENT '비고',
-    `part_type` VARCHAR(20) NOT NULL COMMENT '소모성 구분',
     PRIMARY KEY (`part_id`)
     );
 
@@ -53,6 +49,7 @@ CREATE TABLE IF NOT EXISTS `order_sequence` (
 CREATE TABLE `process_part` (
                                 `process_part_id` BIGINT NOT NULL AUTO_INCREMENT,
                                 `process_id` BIGINT NOT NULL,
+                                `product_id` BIGINT NOT NULL,
                                 `part_id` BIGINT NOT NULL,
                                 `last_warehousing_date` DATETIME NOT NULL,
                                 `current_quantity` INT NOT NULL,
