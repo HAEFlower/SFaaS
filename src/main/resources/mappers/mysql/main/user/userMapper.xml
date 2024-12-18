@@ -89,4 +89,10 @@
         WHERE emp_no = #{targetEmpNo}
     </update>
 
+    <delete id="deleteUser" parameterType="String">
+        DELETE
+        FROM ${bsa.db.schema}.user
+        WHERE emp_no = #{empNo}
+    </delete>
+
 </mapper>
