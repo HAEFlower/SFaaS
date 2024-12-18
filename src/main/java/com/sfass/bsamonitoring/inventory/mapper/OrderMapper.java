@@ -11,4 +11,6 @@ public interface OrderMapper {
     Integer getCurrentQuantity(@Param("productCode") String productCode);
 
     int getNextOrderSequence();
+
+    void insertOrderSequence(int sequence);
 }
