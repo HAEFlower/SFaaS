@@ -66,7 +66,7 @@ public class UserController {
 		return result;
 	}
 
-	@DeleteMapping
+	@PostMapping("/delete")
 	public UserUpdateResponse deleteUser(@RequestBody UserUpdate delete) {
 		UserUpdateResponse result = userService.deleteUser(delete);
 

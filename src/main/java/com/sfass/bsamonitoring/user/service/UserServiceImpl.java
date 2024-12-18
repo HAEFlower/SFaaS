@@ -6,6 +6,8 @@ import java.util.Map;
 
 import com.sfass.bsamonitoring.user.exception.UserAlreadyExits;
 
+import com.sfass.bsamonitoring.user.exception.UserNotFoundException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.sfass.bsamonitoring.global.common.userConstants.UserConstants;
@@ -82,6 +84,10 @@ public class UserServiceImpl implements UserService {
 		User requester = userMapper.getUserByEmpNo(update.getRequestEmpNo());
 		User targetUser = userMapper.getUserByEmpNo(update.getTargetEmpNo());
 
+		if (requester == null || targetUser == null) {
+			throw new UserNotFoundException();
+		}
+
 		if (!requester.getAuth().isHigherAuthority(targetUser.getAuth())) {
 			return new UserUpdateResponse(UserConstants.USER_AUTH_UPDATE_FAIL);
 		}
@@ -94,6 +100,14 @@ public class UserServiceImpl implements UserService {
 	public UserUpdateResponse deleteUser(UserUpdate delete) {
 		User requester = userMapper.getUserByEmpNo(delete.getRequestEmpNo());
 		User targetUser = userMapper.getUserByEmpNo(delete.getTargetEmpNo());
+
+		if (requester == null || targetUser == null) {
+			return new UserUpdateResponse(UserConstants.USER_DELETE_FAIL);
+		}
+
+		if (requester.getEmpNo().equals(targetUser.getEmpNo())) {
+			return new UserUpdateResponse(UserConstants.USER_DELETE_FAIL);
+		}
 
 		if (!requester.getAuth().isHigherAuthority(targetUser.getAuth())) {
 			return new UserUpdateResponse(UserConstants.USER_DELETE_FAIL);
